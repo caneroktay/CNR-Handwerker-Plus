@@ -23,3 +23,8 @@ Es enthält alle SQL-Befehle, die in jeder einzelnen Sprint-Phase erstellt wurde
 ### 🏗 Technischer Aufbau
 
 Datenbank: MySQL – mit fortschrittlicher Nutzung von Stored Procedures, Triggern und Indizes für maximale Performance und Konsistenz.
+
+
+### Database Schema
+
+![Database Schema](./Sprint_1/ERD.png)
