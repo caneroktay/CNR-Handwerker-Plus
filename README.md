@@ -2,7 +2,7 @@
 
 ## Die smarte Handwerker-Verwaltung
 
-**Projektfortschritt:**  ![Progress Bar](https://geps.dev/progress/60)
+**Projektfortschritt:**  ![Progress Bar](https://geps.dev/progress/60)  -  Status: Sprint 5 hat begonnen. 
 
 ![](./images/handwerkerpro.jpg)
 
