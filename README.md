@@ -1,9 +1,8 @@
-# CNR Handwerker PLUS   
+# CNR Handwerker PLUS
 
 ## Die smarte Handwerker-Verwaltung
 
-**Projektfortschritt:**
-<progress value="60" max="100"></progress> 60%
+**Projektfortschritt:**  ![Progress Bar](https://geps.dev/progress/60)      ![Progress Bar](https://img.shields.io/badge/handwerkerPlus-60%40-orange)
 
 ![](./images/handwerkerpro.jpg)
 
@@ -27,7 +26,7 @@ Es enthält alle SQL-Befehle, die in jeder einzelnen Sprint-Phase erstellt wurde
 
 Datenbank: MySQL – mit fortschrittlicher Nutzung von Stored Procedures, Triggern und Indizes für maximale Performance und Konsistenz.
 
-### Database Schema  
+### Database Schema
 
 Das ERD zu Beginn des Projekts sieht wie folgt aus: (Es ändert sich am Ende jedes Sprints.)
 
