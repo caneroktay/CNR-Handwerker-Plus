@@ -6,7 +6,10 @@ USE handwerkerpro_db;
 
 -- Tabelle für gelöschte Kunden (Archiv)
 CREATE TABLE IF NOT EXISTS kunden_archiv AS SELECT * FROM kunden WHERE 1=0;
-ALTER TABLE kunden_archiv ADD COLUMN geloescht_am TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE kunden_archiv 
+ADD COLUMN geloescht_am TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN archiv_name VARCHAR(255) AFTER kunden_id, 
+ADD COLUMN archiv_kontakt VARCHAR(255) AFTER archiv_name;
 
 -- Allgemeine Log-Tabelle für Statusänderungen
 CREATE TABLE IF NOT EXISTS status_log (
@@ -305,32 +308,56 @@ DELIMITER ;
 
 -- H. Kundenarchivierung bei Löschung
 -- Kopiert Kundeninformationen unmittelbar vor dem Löschen in die Archivtabelle
+
 DELIMITER //
+
+DROP TRIGGER IF EXISTS tr_kunden_archivieren //
 
 CREATE TRIGGER tr_kunden_archivieren
 BEFORE DELETE ON kunden
 FOR EACH ROW
 BEGIN
-    
+    DECLARE v_display_name VARCHAR(255);
+    DECLARE v_kontakt_info VARCHAR(255);
+
+    IF OLD.typ = 'firma' THEN
+        SELECT firmenname INTO v_display_name 
+        FROM kunden_firma WHERE kunden_id = OLD.kunden_id LIMIT 1;
+    ELSE
+        SELECT CONCAT(vorname, ' ', nachname) INTO v_display_name 
+        FROM kunden_person WHERE kunden_id = OLD.kunden_id LIMIT 1;
+    END IF;
+
+    SELECT wert INTO v_kontakt_info 
+    FROM kunden_kontakt 
+    WHERE kunden_id = OLD.kunden_id 
+    ORDER BY FIELD(typ, 'Email', 'Telefon', 'Mobil') 
+    LIMIT 1;
+
     INSERT INTO kunden_archiv (
         kunden_id, 
-        name, 
-        email, 
-        telefon, 
+        archiv_name, 
+        archiv_kontakt, 
+        typ, 
+        ist_stammkunde, 
         erstellt_am, 
+        notizen,
         geloescht_am
     )
     VALUES (
         OLD.kunden_id, 
-        OLD.name, 
-        OLD.email, 
-        OLD.telefon, 
+        IFNULL(v_display_name, 'Unbekannter Name'), 
+        IFNULL(v_kontakt_info, 'Keine Kontaktinfo'), 
+        OLD.typ, 
+        OLD.ist_stammkunde, 
         OLD.erstellt_am, 
+        OLD.notizen,
         NOW()
     );
 END //
 
 DELIMITER ;
+
 
 -- --------------------------------------------------------------------------------------
 -- 3. SQL-Script mit Transaktionen (Gekapselt in einer Procedure)
@@ -524,7 +551,7 @@ WHERE auftrag_id = @multi_auftrag_id;
 SET @anfangs_bestand = (SELECT lagerbestand FROM material WHERE material_id = @test_material_id);
 
 -- 2. Vorgang ausführen (3 Stück verwenden)
-CALL sp_neuer_auftrag(@test_kunden_id, 'Stornierungstest', 'low');
+CALL sp_neuer_auftrag(@test_kunden_id, 'Stornierungstest', 'niedrig');
 SET @stornierungs_id = LAST_INSERT_ID();
 CALL sp_material_zuordnen(@stornierungs_id, @test_material_id, 3.00);
 
