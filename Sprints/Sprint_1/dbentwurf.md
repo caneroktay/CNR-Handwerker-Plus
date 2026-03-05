@@ -1,8 +1,8 @@
-# Datenbankentwurf – HandwerkerPro
+# Datenbankentwurf – CNR Handwerker Plus
 
 ## 1. Einleitung
 
-Im Rahmen des Projekts wurde für die Anwendung **HandwerkerPro** eine relationale Datenbank entwickelt. Ziel der Datenbank ist die strukturierte Verwaltung aller relevanten Geschäftsprozesse eines Handwerksbetriebs.
+Im Rahmen des Projekts wurde für die Anwendung CNR **Handwerker plus** eine relationale Datenbank entwickelt. Ziel der Datenbank ist die strukturierte Verwaltung aller relevanten Geschäftsprozesse eines Handwerksbetriebs.
 
 Die Datenbank dient als zentrale Datenquelle für:
 

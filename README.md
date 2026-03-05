@@ -1,10 +1,10 @@
-# HandwerkerPro
+# CNR Handwerker PLUS
 
 ## Die smarte Handwerker-Verwaltung
 
 ![](./images/handwerkerpro.jpg)
 
-HandwerkerPro ist eine ganzheitliche Full-Stack-Lösung, die speziell für die Anforderungen von Handwerksbetrieben und Technikern entwickelt wurde. Von der ersten Kundenanfrage bis zur automatisierten Rechnungsstellung deckt die Anwendung den gesamten Geschäftsprozess digital ab.
+CNR Handwerker Plus ist eine ganzheitliche Full-Stack-Lösung, die speziell für die Anforderungen von Handwerksbetrieben und Technikern entwickelt wurde. Von der ersten Kundenanfrage bis zur automatisierten Rechnungsstellung deckt die Anwendung den gesamten Geschäftsprozess digital ab.
 
 ### 🛠 Features & Funktionalitäten
 
@@ -23,7 +23,6 @@ Es enthält alle SQL-Befehle, die in jeder einzelnen Sprint-Phase erstellt wurde
 ### 🏗 Technischer Aufbau
 
 Datenbank: MySQL – mit fortschrittlicher Nutzung von Stored Procedures, Triggern und Indizes für maximale Performance und Konsistenz.
-
 
 ### Database Schema
 

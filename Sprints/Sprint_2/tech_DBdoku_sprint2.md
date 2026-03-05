@@ -1,4 +1,4 @@
-# Technische Datenbankdokumentation: HandwerkerPro DB
+# Technische Datenbankdokumentation: CNR Handwerker Plus DB
 
 ---
 
