@@ -24,6 +24,8 @@ Es enthält alle SQL-Befehle, die in jeder einzelnen Sprint-Phase erstellt wurde
 
 Datenbank: MySQL – mit fortschrittlicher Nutzung von Stored Procedures, Triggern und Indizes für maximale Performance und Konsistenz.
 
-### Database Schema
+### Database Schema  
+
+Das ERD zu Beginn des Projekts sieht wie folgt aus: (Es ändert sich am Ende jedes Sprints.)
 
 ![](./Sprints/Sprint_1/ERD.png)
