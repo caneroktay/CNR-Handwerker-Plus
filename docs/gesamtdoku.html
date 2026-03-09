@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HandwerkerPro — Gesamtdokumentation</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+:root {
+  --accent: #4f6ef7;
+  --dark:   #1a1f2e;
+  --s1: #7c3aed;
+  --s2: #0ea5e9;
+  --s3: #10b981;
+  --s4: #f59e0b;
+  --s5: #ef4444;
+}
+
+body { font-family:'Segoe UI',sans-serif; background:#f0f2f5; color:#1a1f2e; }
+
+/* ── SIDEBAR ───────────────────────────────── */
+.sidebar {
+  position:fixed; top:0; left:0; width:270px; height:100vh;
+  background:var(--dark); overflow-y:auto; z-index:100; padding-bottom:48px;
+  scrollbar-width:thin; scrollbar-color:#2d3452 transparent;
+}
+.sidebar .brand { padding:20px; border-bottom:1px solid rgba(255,255,255,.08); }
+.sidebar .brand h5 { color:#fff; font-weight:800; margin:0; font-size:1rem; }
+.sidebar .brand small { color:#6b7598; font-size:.72rem; }
+.sidebar .section-title {
+  color:#4a5278; font-size:.67rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; padding:16px 20px 4px;
+}
+.sidebar .nav-link {
+  color:#9aa3c2; padding:7px 16px; font-size:.82rem;
+  display:flex; align-items:center; gap:8px;
+  border-radius:7px; margin:1px 8px; transition:.15s;
+}
+.sidebar .nav-link:hover { background:#2d3452; color:#fff; }
+.sidebar .nav-link.active { background:var(--accent); color:#fff; }
+.sidebar .sprint-badge {
+  display:inline-block; width:20px; height:20px; border-radius:5px;
+  font-size:.65rem; font-weight:800; text-align:center; line-height:20px; flex-shrink:0;
+}
+.sb-s1 { background:#7c3aed22; color:#7c3aed; }
+.sb-s2 { background:#0ea5e922; color:#0ea5e9; }
+.sb-s3 { background:#10b98122; color:#10b981; }
+.sb-s4 { background:#f59e0b22; color:#f59e0b; }
+.sb-s5 { background:#ef444422; color:#ef4444; }
+
+/* ── MAIN ──────────────────────────────────── */
+.main { margin-left:270px; padding:36px 44px; }
+.section-anchor { scroll-margin-top:24px; }
+
+/* ── HERO ──────────────────────────────────── */
+.hero {
+  background:linear-gradient(135deg,#1a1f2e 0%,#2d3452 100%);
+  color:#fff; border-radius:18px; padding:40px; margin-bottom:40px;
+}
+.hero h1 { font-weight:900; font-size:2rem; }
+
+/* ── SPRINT HEADERS ────────────────────────── */
+.sprint-header {
+  border-radius:14px; padding:20px 24px; margin-bottom:28px; color:#fff;
+  display:flex; align-items:center; gap:16px;
+}
+.sh-s1 { background:linear-gradient(135deg,#7c3aed,#9d5cf7); }
+.sh-s2 { background:linear-gradient(135deg,#0369a1,#0ea5e9); }
+.sh-s3 { background:linear-gradient(135deg,#047857,#10b981); }
+.sh-s4 { background:linear-gradient(135deg,#b45309,#f59e0b); }
+.sh-s5 { background:linear-gradient(135deg,#b91c1c,#ef4444); }
+.sprint-header .sprint-num {
+  font-size:2.2rem; font-weight:900; opacity:.35; line-height:1;
+}
+.sprint-header h3 { font-weight:700; margin:0; font-size:1.2rem; }
+.sprint-header p  { margin:2px 0 0; opacity:.8; font-size:.85rem; }
+
+/* ── CARDS ─────────────────────────────────── */
+.doc-card {
+  background:#fff; border-radius:14px; border:none;
+  box-shadow:0 2px 12px rgba(0,0,0,.07); margin-bottom:16px; overflow:hidden;
+}
+.doc-card .card-header {
+  padding:13px 20px; background:#f8f9fa;
+  border-bottom:1px solid #eef0f5; display:flex; align-items:center; gap:10px;
+}
+.doc-card .card-body { padding:20px; }
+
+/* ── CODE BLOCKS ───────────────────────────── */
+.code {
+  background:#1e1e2e; color:#cdd6f4; border-radius:10px;
+  padding:14px 16px; font-size:.82rem; font-family:'Courier New',monospace;
+  overflow-x:auto; line-height:1.65;
+}
+.code pre { margin:0; white-space:pre-wrap; }
+.ck { color:#89b4fa; }
+.cv { color:#a6e3a1; }
+.cn { color:#fab387; }
+.cb { color:#f38ba8; }
+.cc { color:#6c7086; font-style:italic; }
+.ckw { color:#cba6f7; }
+
+/* ── TABLES ────────────────────────────────── */
+.param-table { font-size:.83rem; }
+.param-table th { background:#f4f6fb; font-weight:600; font-size:.78rem; color:#4a5278; }
+.param-table td { vertical-align:middle; }
+
+/* ── BADGES ────────────────────────────────── */
+.m { padding:4px 10px; border-radius:6px; font-weight:700; font-size:.74rem; min-width:60px; text-align:center; }
+.m-GET    { background:#e8f5e9; color:#2e7d32; }
+.m-POST   { background:#e3f2fd; color:#1565c0; }
+.m-PUT    { background:#fff3e0; color:#e65100; }
+.m-DELETE { background:#fce8e8; color:#c62828; }
+
+.req { background:#fce8e8; color:#c62828; font-size:.7rem; padding:2px 7px; border-radius:4px; font-weight:600; }
+.opt { background:#eef2ff; color:#4f6ef7;  font-size:.7rem; padding:2px 7px; border-radius:4px; font-weight:600; }
+
+.role { padding:3px 8px; border-radius:5px; font-size:.73rem; font-weight:700; }
+.role-all     { background:#e8f5e9; color:#2e7d32; }
+.role-geselle { background:#e3f2fd; color:#1565c0; }
+.role-meister { background:#fff8e1; color:#f57f17; }
+.role-admin   { background:#fce8e8; color:#c62828; }
+
+.sc { display:inline-block; padding:2px 7px; border-radius:5px; font-size:.77rem; font-weight:700; font-family:monospace; }
+.sc-2xx { background:#e8f5e9; color:#2e7d32; }
+.sc-4xx { background:#fce8e8; color:#c62828; }
+.sc-5xx { background:#fff3e0; color:#e65100; }
+
+/* ── STEPS (Installation) ───────────────────── */
+.step { display:flex; gap:16px; margin-bottom:22px; }
+.step-num {
+  width:34px; height:34px; border-radius:50%; background:var(--accent);
+  color:#fff; font-weight:700; display:grid; place-items:center;
+  flex-shrink:0; font-size:.9rem;
+}
+.step-body h6 { font-weight:700; margin-bottom:4px; }
+
+/* ── TRIGGER TABLE ──────────────────────────── */
+.trigger-table td, .trigger-table th { font-size:.83rem; vertical-align:middle; }
+.trigger-icon { font-size:1.1rem; }
+
+/* ── SCENARIO CARDS ─────────────────────────── */
+.scenario-card {
+  border-left:4px solid var(--accent); background:#fff;
+  border-radius:0 10px 10px 0; padding:14px 18px; margin-bottom:12px;
+}
+.scenario-card h6 { font-weight:700; margin-bottom:6px; font-size:.88rem; }
+
+/* ── KARDINALITÄT ───────────────────────────── */
+.kard-badge {
+  display:inline-block; background:#1e1e2e; color:#89b4fa;
+  font-family:monospace; font-size:.82rem; padding:4px 12px;
+  border-radius:7px; margin-top:6px;
+}
+
+/* ── URL ────────────────────────────────────── */
+.url { font-family:'Courier New',monospace; font-size:.9rem; font-weight:600; }
+
+/* ── DIVIDER ────────────────────────────────── */
+.sprint-divider { border:0; border-top:2px dashed #e2e6f0; margin:48px 0; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════════ -->
+<nav class="sidebar">
+  <div class="brand">
+    <div class="d-flex align-items-center gap-2">
+      <div style="background:var(--accent);border-radius:10px;width:38px;height:38px;display:grid;place-items:center">
+        <i class="bi bi-database-fill text-white fs-5"></i>
+      </div>
+      <div>
+        <h5>HandwerkerPro</h5>
+        <small>Gesamtdokumentation · Sprint 1–5</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Sprint 1 — DB Entwurf</div>
+  <a href="#s1-einleitung" class="nav-link"><span class="sprint-badge sb-s1">1</span>Einleitung & Ziele</a>
+  <a href="#s1-konzept"    class="nav-link"><span class="sprint-badge sb-s1">1</span>Konzeptionelles Modell</a>
+  <a href="#s1-logisch"    class="nav-link"><span class="sprint-badge sb-s1">1</span>Logisches Modell (Tabellen)</a>
+  <a href="#s1-physisch"   class="nav-link"><span class="sprint-badge sb-s1">1</span>Physisches Modell</a>
+  <a href="#s1-normal"     class="nav-link"><span class="sprint-badge sb-s1">1</span>Normalisierung</a>
+  <a href="#s1-sicherheit" class="nav-link"><span class="sprint-badge sb-s1">1</span>Sicherheitskonzept</a>
+
+  <div class="section-title">Sprint 2 — Technische DB-Doku</div>
+  <a href="#s2-datentypen"   class="nav-link"><span class="sprint-badge sb-s2">2</span>Datentypen & Warum</a>
+  <a href="#s2-constraints"  class="nav-link"><span class="sprint-badge sb-s2">2</span>Constraints</a>
+  <a href="#s2-installation" class="nav-link"><span class="sprint-badge sb-s2">2</span>Installation DB</a>
+
+  <div class="section-title">Sprint 3 — Views & Queries</div>
+  <a href="#s3-tagesgeschaeft" class="nav-link"><span class="sprint-badge sb-s3">3</span>Tagesgeschäft-Views</a>
+  <a href="#s3-woche"          class="nav-link"><span class="sprint-badge sb-s3">3</span>Wochenplanung-Views</a>
+  <a href="#s3-monat"          class="nav-link"><span class="sprint-badge sb-s3">3</span>Monatsreporting-Views</a>
+  <a href="#s3-lager"          class="nav-link"><span class="sprint-badge sb-s3">3</span>Material & Lager-Views</a>
+  <a href="#s3-zusammenfassung" class="nav-link"><span class="sprint-badge sb-s3">3</span>Technische Zusammenfassung</a>
+
+  <div class="section-title">Sprint 4 — Automatisierung</div>
+  <a href="#s4-procedures" class="nav-link"><span class="sprint-badge sb-s4">4</span>Stored Procedures</a>
+  <a href="#s4-trigger"    class="nav-link"><span class="sprint-badge sb-s4">4</span>Trigger</a>
+  <a href="#s4-transaction" class="nav-link"><span class="sprint-badge sb-s4">4</span>Transaktionen</a>
+  <a href="#s4-indizes"    class="nav-link"><span class="sprint-badge sb-s4">4</span>Performance & Indizes</a>
+  <a href="#s4-tests"      class="nav-link"><span class="sprint-badge sb-s4">4</span>Abnahmetests</a>
+
+  <div class="section-title">Sprint 5 — REST API</div>
+  <a href="#s5-uebersicht"  class="nav-link"><span class="sprint-badge sb-s5">5</span>API-Übersicht</a>
+  <a href="#s5-installation" class="nav-link"><span class="sprint-badge sb-s5">5</span>Installation (Slim)</a>
+  <a href="#s5-auth"        class="nav-link"><span class="sprint-badge sb-s5">5</span>Authentifizierung</a>
+  <a href="#s5-fehler"      class="nav-link"><span class="sprint-badge sb-s5">5</span>Fehlerbehandlung</a>
+  <a href="#s5-sicherheit"  class="nav-link"><span class="sprint-badge sb-s5">5</span>Sicherheit</a>
+  <a href="#s5-ep-auth"     class="nav-link"><span class="sprint-badge sb-s5">5</span>Endpoints: Auth</a>
+  <a href="#s5-ep-dashboard" class="nav-link"><span class="sprint-badge sb-s5">5</span>Endpoints: Dashboard</a>
+  <a href="#s5-ep-kunden"   class="nav-link"><span class="sprint-badge sb-s5">5</span>Endpoints: Kunden</a>
+  <a href="#s5-ep-auftraege" class="nav-link"><span class="sprint-badge sb-s5">5</span>Endpoints: Aufträge</a>
+  <a href="#s5-ep-rechnungen" class="nav-link"><span class="sprint-badge sb-s5">5</span>Endpoints: Rechnungen</a>
+  <a href="#s5-ep-material" class="nav-link"><span class="sprint-badge sb-s5">5</span>Endpoints: Material</a>
+</nav>
+
+<!-- ══════════════════════════════════════════════
+     MAIN
+══════════════════════════════════════════════ -->
+<div class="main">
+
+<!-- HERO -->
+<div class="hero mb-5">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+    <div>
+      <h1 class="mb-1">HandwerkerPro</h1>
+      <p class="mb-0 opacity-75 fs-5">Gesamtdokumentation · Sprint 1 bis Sprint 5</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap mt-1">
+      <span class="badge px-3 py-2" style="background:#7c3aed">Sprint 1</span>
+      <span class="badge px-3 py-2" style="background:#0ea5e9">Sprint 2</span>
+      <span class="badge px-3 py-2" style="background:#10b981">Sprint 3</span>
+      <span class="badge px-3 py-2" style="background:#f59e0b">Sprint 4</span>
+      <span class="badge px-3 py-2" style="background:#ef4444">Sprint 5</span>
+    </div>
+  </div>
+  <div class="row mt-4 g-3">
+    <div class="col-md-2 col-6 text-center">
+      <div class="fw-bold fs-4">15</div><div style="font-size:.8rem;opacity:.7">Tabellen</div>
+    </div>
+    <div class="col-md-2 col-6 text-center">
+      <div class="fw-bold fs-4">16</div><div style="font-size:.8rem;opacity:.7">Views</div>
+    </div>
+    <div class="col-md-2 col-6 text-center">
+      <div class="fw-bold fs-4">6</div><div style="font-size:.8rem;opacity:.7">Stored Procedures</div>
+    </div>
+    <div class="col-md-2 col-6 text-center">
+      <div class="fw-bold fs-4">8</div><div style="font-size:.8rem;opacity:.7">Trigger</div>
+    </div>
+    <div class="col-md-2 col-6 text-center">
+      <div class="fw-bold fs-4">22</div><div style="font-size:.8rem;opacity:.7">API-Endpoints</div>
+    </div>
+    <div class="col-md-2 col-6 text-center">
+      <div class="fw-bold fs-4">PHP 8</div><div style="font-size:.8rem;opacity:.7">Slim Framework 4</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SPRINT 1 — DATENBANKENTWURF
+══════════════════════════════════════════════ -->
+<div class="sprint-header sh-s1 section-anchor" id="s1-einleitung">
+  <div class="sprint-num">01</div>
+  <div>
+    <h3>Datenbankentwurf</h3>
+    <p>Konzeptionelles, logisches und physisches Datenmodell · Normalisierung · Sicherheitskonzept</p>
+  </div>
+</div>
+
+<div class="doc-card">
+  <div class="card-header"><i class="bi bi-info-circle text-primary me-2"></i><strong>Einleitung & Projektziele</strong></div>
+  <div class="card-body">
+    <p style="font-size:.875rem;">Im Rahmen des Projekts wurde für <strong>HandwerkerPro</strong> eine relationale Datenbank entwickelt. Ziel ist die strukturierte Verwaltung aller relevanten Geschäftsprozesse eines Handwerksbetriebs.</p>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <h6 class="fw-bold">Datenbank dient als zentrale Quelle für:</h6>
+        <ul style="font-size:.875rem;">
+          <li>Kundenverwaltung</li>
+          <li>Mitarbeiterverwaltung</li>
+          <li>Auftragsverwaltung</li>
+          <li>Terminplanung</li>
+          <li>Angebots- und Rechnungsverwaltung</li>
+        </ul>
+      </div>
+      <div class="col-md-6">
+        <h6 class="fw-bold">Entwicklungsprinzipien:</h6>
+        <ul style="font-size:.875rem;">
+          <li>Datenkonsistenz</li>
+          <li>Erweiterbarkeit</li>
+          <li>Normalisierung bis 3NF</li>
+          <li>Klare Tabellenbeziehungen</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:.82rem;" class="text-muted mb-0">Die Modellierung orientiert sich an den Anforderungen der <strong>IHK</strong> für Fachinformatiker Anwendungsentwicklung.</p>
+  </div>
+</div>
+
+<!-- Konzeptionelles Modell -->
+<div id="s1-konzept" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">Konzeptionelles Datenmodell</h5>
+
+  <div class="doc-card">
+    <div class="card-header"><i class="bi bi-diagram-2 text-primary me-2"></i><strong>Entitäten</strong></div>
+    <div class="card-body">
+      <div class="row g-2">
+        <div class="col-md-6">
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge bg-primary-subtle text-primary px-3 py-2">Kunde</span>
+            <span class="badge bg-primary-subtle text-primary px-3 py-2">Mitarbeiter</span>
+            <span class="badge bg-primary-subtle text-primary px-3 py-2">Auftrag</span>
+            <span class="badge bg-primary-subtle text-primary px-3 py-2">Termin</span>
+            <span class="badge bg-primary-subtle text-primary px-3 py-2">Angebot</span>
+            <span class="badge bg-primary-subtle text-primary px-3 py-2">Rechnung</span>
+            <span class="badge bg-primary-subtle text-primary px-3 py-2">Position</span>
+            <span class="badge bg-primary-subtle text-primary px-3 py-2">Login_Log</span>
+            <span class="badge bg-primary-subtle text-primary px-3 py-2">Material</span>
+            <span class="badge bg-primary-subtle text-primary px-3 py-2">Auftrag_Material</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <p style="font-size:.875rem;" class="mb-0">Die Entität <strong>Kunde</strong> wurde bewusst weiter unterteilt, um Privat- und Firmenkunden sauber zu trennen:</p>
+          <div class="d-flex gap-2 mt-2 flex-wrap">
+            <span class="badge bg-secondary-subtle text-secondary">kunden</span>
+            <span class="badge bg-secondary-subtle text-secondary">kunden_person</span>
+            <span class="badge bg-secondary-subtle text-secondary">kunden_firma</span>
+            <span class="badge bg-secondary-subtle text-secondary">kunden_adressen</span>
+            <span class="badge bg-secondary-subtle text-secondary">kunden_kontakt</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><i class="bi bi-arrows-angle-expand text-primary me-2"></i><strong>Kardinalitäten</strong></div>
+    <div class="card-body">
+      <table class="table table-sm param-table mb-0">
+        <thead><tr><th>Beziehung</th><th>Kardinalität</th><th>Bedeutung</th></tr></thead>
+        <tbody>
+          <tr><td>Kunde – Auftrag</td><td><span class="badge bg-info-subtle text-info">1 : N</span></td><td>Ein Kunde kann mehrere Aufträge besitzen</td></tr>
+          <tr><td>Auftrag – Position</td><td><span class="badge bg-info-subtle text-info">1 : N</span></td><td>Ein Auftrag enthält mehrere Positionen</td></tr>
+          <tr><td>Auftrag – Termin</td><td><span class="badge bg-info-subtle text-info">1 : N</span></td><td>Ein Auftrag kann mehrere Termine besitzen</td></tr>
+          <tr><td>Mitarbeiter – Termin</td><td><span class="badge bg-info-subtle text-info">1 : N</span></td><td>Ein Mitarbeiter kann mehrere Termine durchführen</td></tr>
+          <tr><td>Auftrag – Rechnung</td><td><span class="badge bg-warning-subtle text-warning">1 : 0..1</span></td><td>Ein Auftrag kann optional eine Rechnung erzeugen</td></tr>
+          <tr><td>Auftrag – Material</td><td><span class="badge bg-danger-subtle text-danger">N : M</span></td><td>Aufgelöst über Verknüpfungstabelle <code>auftrag_material</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Logisches Modell -->
+<div id="s1-logisch" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">Logisches Datenmodell — Tabellen</h5>
+
+  <div class="row g-3">
+    <!-- Kunden-Gruppe -->
+    <div class="col-12">
+      <div class="doc-card">
+        <div class="card-header"><i class="bi bi-people text-primary me-2"></i><strong>Kunden-Gruppe (5 Tabellen)</strong></div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <h6 class="fw-bold border-bottom pb-1">kunden <small class="text-muted fw-normal">(Haupttabelle)</small></h6>
+              <ul class="list-unstyled mb-0" style="font-size:.82rem;">
+                <li><code>kunden_id</code> <span class="badge bg-warning-subtle text-warning">PK</span></li>
+                <li><code>typ</code> — privat / firma</li>
+                <li><code>ist_stammkunde</code> — BOOLEAN</li>
+                <li><code>erstellt_am</code></li>
+                <li><code>notizen</code></li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h6 class="fw-bold border-bottom pb-1">kunden_person</h6>
+              <ul class="list-unstyled mb-0" style="font-size:.82rem;">
+                <li><code>kunden_id</code> <span class="badge bg-warning-subtle text-warning">PK</span> <span class="badge bg-danger-subtle text-danger">FK</span></li>
+                <li><code>vorname</code></li>
+                <li><code>nachname</code></li>
+              </ul>
+              <div class="kard-badge mt-2">kunden (1) —— (0..1) kunden_person</div>
+            </div>
+            <div class="col-md-4">
+              <h6 class="fw-bold border-bottom pb-1">kunden_firma</h6>
+              <ul class="list-unstyled mb-0" style="font-size:.82rem;">
+                <li><code>kunden_id</code> <span class="badge bg-warning-subtle text-warning">PK</span> <span class="badge bg-danger-subtle text-danger">FK</span></li>
+                <li><code>firmenname</code></li>
+                <li><code>ansprechpartner</code></li>
+                <li><code>ust_id</code></li>
+              </ul>
+              <div class="kard-badge mt-2">kunden (1) —— (0..1) kunden_firma</div>
+            </div>
+            <div class="col-md-4">
+              <h6 class="fw-bold border-bottom pb-1">kunden_adressen</h6>
+              <ul class="list-unstyled mb-0" style="font-size:.82rem;">
+                <li><code>adress_id</code> <span class="badge bg-warning-subtle text-warning">PK</span></li>
+                <li><code>kunden_id</code> <span class="badge bg-danger-subtle text-danger">FK</span></li>
+                <li><code>strasse</code>, <code>hausnummer</code></li>
+                <li><code>plz</code>, <code>ort</code></li>
+                <li><code>typ</code></li>
+              </ul>
+              <div class="kard-badge mt-2">kunden (1) —— (0..N) kunden_adressen</div>
+            </div>
+            <div class="col-md-4">
+              <h6 class="fw-bold border-bottom pb-1">kunden_kontakt</h6>
+              <ul class="list-unstyled mb-0" style="font-size:.82rem;">
+                <li><code>kontakt_id</code> <span class="badge bg-warning-subtle text-warning">PK</span></li>
+                <li><code>kunden_id</code> <span class="badge bg-danger-subtle text-danger">FK</span></li>
+                <li><code>typ</code> — Telefon, Email, Mobil…</li>
+                <li><code>wert</code></li>
+              </ul>
+              <div class="kard-badge mt-2">kunden (1) —— (0..N) kunden_kontakt</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mitarbeiter & Auftrag -->
+    <div class="col-md-6">
+      <div class="doc-card h-100">
+        <div class="card-header"><i class="bi bi-person-badge text-primary me-2"></i><strong>mitarbeiter</strong></div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-0" style="font-size:.83rem;">
+            <li><code>mitarbeiter_id</code> <span class="badge bg-warning-subtle text-warning">PK</span></li>
+            <li><code>vorname</code>, <code>nachname</code></li>
+            <li><code>email</code> <span class="badge bg-success-subtle text-success">UNIQUE</span></li>
+            <li><code>password_hash</code> — Argon2ID / bcrypt</li>
+            <li><code>rolle</code> — admin, meister, geselle, azubi, buero</li>
+            <li><code>aktiv</code> — BOOLEAN</li>
+            <li><code>letzte_login</code> — DATETIME</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="doc-card h-100">
+        <div class="card-header"><i class="bi bi-clipboard text-primary me-2"></i><strong>auftrag</strong> <small class="text-muted">— Zentrale Tabelle</small></div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-0" style="font-size:.83rem;">
+            <li><code>auftrag_id</code> <span class="badge bg-warning-subtle text-warning">PK</span></li>
+            <li><code>kunden_id</code> <span class="badge bg-danger-subtle text-danger">FK</span></li>
+            <li><code>auftrag_nr</code> <span class="badge bg-success-subtle text-success">UNIQUE</span> — auto-generiert</li>
+            <li><code>titel</code>, <code>beschreibung</code></li>
+            <li><code>status</code> — neu, geplant, aktiv, abgeschlossen, abgerechnet, storniert</li>
+            <li><code>prioritaet</code> — niedrig, normal, dringend, notfall</li>
+            <li><code>notiz_intern</code>, <code>kunden_kommentar</code></li>
+            <li><code>abgeschlossen_am</code>, <code>erstellt_am</code></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weitere Tabellen -->
+    <div class="col-md-4">
+      <div class="doc-card h-100">
+        <div class="card-header"><i class="bi bi-calendar-event text-primary me-2"></i><strong>termin</strong></div>
+        <div class="card-body" style="font-size:.83rem;">
+          <ul class="list-unstyled mb-0">
+            <li><code>termin_id</code> <span class="badge bg-warning-subtle text-warning">PK</span></li>
+            <li><code>auftrag_id</code> <span class="badge bg-danger-subtle text-danger">FK</span></li>
+            <li><code>mitarbeiter_id</code> <span class="badge bg-danger-subtle text-danger">FK</span></li>
+            <li><code>start_datetime</code>, <code>end_datetime</code></li>
+            <li><code>status</code></li>
+            <li class="text-muted mt-1"><small>CHECK: end_datetime &gt; start_datetime</small></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="doc-card h-100">
+        <div class="card-header"><i class="bi bi-receipt text-primary me-2"></i><strong>rechnung</strong></div>
+        <div class="card-body" style="font-size:.83rem;">
+          <ul class="list-unstyled mb-0">
+            <li><code>rechnung_id</code> <span class="badge bg-warning-subtle text-warning">PK</span></li>
+            <li><code>auftrag_id</code> <span class="badge bg-danger-subtle text-danger">FK</span></li>
+            <li><code>kunden_id</code> <span class="badge bg-danger-subtle text-danger">FK</span></li>
+            <li><code>rechnungs_datum</code></li>
+            <li><code>faellig_am</code></li>
+            <li><code>status</code> — entwurf, gesendet, bezahlt, überfällig</li>
+            <li><code>gesamtbetrag</code> DECIMAL(10,2)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="doc-card h-100">
+        <div class="card-header"><i class="bi bi-boxes text-primary me-2"></i><strong>material</strong></div>
+        <div class="card-body" style="font-size:.83rem;">
+          <ul class="list-unstyled mb-0">
+            <li><code>material_id</code> <span class="badge bg-warning-subtle text-warning">PK</span></li>
+            <li><code>name</code></li>
+            <li><code>beschreibung</code></li>
+            <li><code>einheit</code> — m, Stk, Pkg…</li>
+            <li><code>lagerbestand</code></li>
+            <li><code>preis_pro_einheit</code> DECIMAL(10,2)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Physisches Modell -->
+<div id="s1-physisch" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">Physisches Datenmodell</h5>
+  <div class="doc-card">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <h6 class="fw-bold">Verwendete Datentypen</h6>
+          <table class="table table-sm param-table mb-0">
+            <thead><tr><th>Datentyp</th><th>Verwendung</th></tr></thead>
+            <tbody>
+              <tr><td><code>INT</code></td><td>Primärschlüssel, IDs</td></tr>
+              <tr><td><code>VARCHAR</code></td><td>Textfelder (Namen, E-Mail)</td></tr>
+              <tr><td><code>TEXT</code></td><td>Beschreibungen, Notizen</td></tr>
+              <tr><td><code>DECIMAL(10,2)</code></td><td>Preiswerte (exakt, kein Float!)</td></tr>
+              <tr><td><code>DECIMAL(10,3)</code></td><td>Mengen (z.B. 0,5 Stunden)</td></tr>
+              <tr><td><code>DATE / DATETIME</code></td><td>Kalenderdaten / Zeitstempel</td></tr>
+              <tr><td><code>BOOLEAN</code></td><td>Ja/Nein-Felder</td></tr>
+              <tr><td><code>ENUM</code></td><td>Statusfelder, Typen, Rollen</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <h6 class="fw-bold">Verwendete Constraints</h6>
+          <table class="table table-sm param-table mb-0">
+            <thead><tr><th>Constraint</th><th>Zweck</th></tr></thead>
+            <tbody>
+              <tr><td><code>PRIMARY KEY</code></td><td>Eindeutige Identifikation</td></tr>
+              <tr><td><code>FOREIGN KEY</code></td><td>Tabellenverknüpfung</td></tr>
+              <tr><td><code>NOT NULL</code></td><td>Pflichtfelder erzwingen</td></tr>
+              <tr><td><code>AUTO_INCREMENT</code></td><td>Automatische ID-Generierung</td></tr>
+              <tr><td><code>UNIQUE</code></td><td>Duplikate verhindern (Email, Nr)</td></tr>
+              <tr><td><code>CHECK</code></td><td>Logikwächter (Preis ≥ 0, Datum)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Normalisierung -->
+<div id="s1-normal" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">Normalisierung</h5>
+  <div class="doc-card">
+    <div class="card-body">
+      <p style="font-size:.875rem;">Die Datenbank wurde bis zur <strong>3. Normalform (3NF)</strong> normalisiert.</p>
+      <div class="row g-3 mb-4">
+        <div class="col-md-4">
+          <div class="p-3 rounded-3" style="background:#f0f4ff;border:1px solid #c7d3ff;">
+            <h6 class="fw-bold">1. Normalform</h6>
+            <p style="font-size:.83rem;" class="mb-0">Alle Attribute sind atomar — keine Mehrfachwerte in einem Feld.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-3 rounded-3" style="background:#f0fff4;border:1px solid #b7e4c7;">
+            <h6 class="fw-bold">2. Normalform</h6>
+            <p style="font-size:.83rem;" class="mb-0">Alle Nicht-Schlüsselattribute hängen vollständig vom Primärschlüssel ab.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="p-3 rounded-3" style="background:#fffbf0;border:1px solid #ffe0a3;">
+            <h6 class="fw-bold">3. Normalform</h6>
+            <p style="font-size:.83rem;" class="mb-0">Keine transitiven Abhängigkeiten — Kundendaten in separate Tabellen ausgelagert.</p>
+          </div>
+        </div>
+      </div>
+      <h6 class="fw-bold">Bewusste Denormalisierungen (begründet)</h6>
+      <ul style="font-size:.875rem;">
+        <li><strong>Preishistorisierung</strong> in <code>auftrag_position</code> und <code>rechnung_position</code>: Der Preis wird zum Zeitpunkt der Bestellung kopiert. Preisänderungen in der Zukunft dürfen bestehende Rechnungen nicht rückwirkend verändern (<strong>GoBD-konform</strong>).</li>
+        <li><strong>MwSt-Satz</strong> direkt in Positionstabellen gespeichert: Sichert korrekte Berechnung bei gesetzlichen Steuersatzänderungen.</li>
+        <li><strong><code>netto_summe</code> in <code>angebot</code></strong>: Bewusste Denormalisierung als Performance-Cache. Verhindert rechenintensive Aggregationen bei jedem Seitenaufruf.</li>
+        <li><strong><code>auftrag_material</code></strong>: Löst N:M-Beziehung auf und verhindert Materialkosten-Redundanz.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Sicherheitskonzept -->
+<div id="s1-sicherheit" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">Sicherheitskonzept & Datenintegrität</h5>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="doc-card h-100">
+        <div class="card-header"><i class="bi bi-database-lock text-primary me-2"></i><strong>Datenbankebene</strong></div>
+        <div class="card-body">
+          <ul style="font-size:.875rem;">
+            <li>Fremdschlüsselbeziehungen mit <code>ON DELETE CASCADE</code> / <code>SET NULL</code></li>
+            <li>NOT NULL Constraints an Pflichtfeldern</li>
+            <li>ENUM-Werte für kontrollierte Eingaben</li>
+            <li>AUTO_INCREMENT Schlüssel</li>
+            <li>UNIQUE auf E-Mail und Auftragsnummern</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="doc-card h-100">
+        <div class="card-header"><i class="bi bi-shield-check text-primary me-2"></i><strong>Anwendungsebene</strong></div>
+        <div class="card-body">
+          <ul style="font-size:.875rem;">
+            <li>Passwortspeicherung als Hash (Argon2ID / bcrypt)</li>
+            <li>Login-Protokollierung in <code>login_log</code></li>
+            <li>Rollenbasierte Zugriffskontrolle (admin → meister → geselle → azubi → buero)</li>
+            <li>Pflichtfelder bei Kundenerstellung</li>
+            <li>Validierung von Datumswerten</li>
+            <li>Trennung von Benutzer- und Kundendaten</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="sprint-divider">
+
+<!-- ══════════════════════════════════════════════
+     SPRINT 2 — TECHNISCHE DB-DOKUMENTATION
+══════════════════════════════════════════════ -->
+<div class="sprint-header sh-s2 section-anchor" id="s2-datentypen">
+  <div class="sprint-num">02</div>
+  <div>
+    <h3>Technische Datenbankdokumentation</h3>
+    <p>Datentypen · Constraints · Installationsanleitung</p>
+  </div>
+</div>
+
+<div class="doc-card">
+  <div class="card-header"><i class="bi bi-question-circle text-primary me-2"></i><strong>Warum DECIMAL und nicht FLOAT?</strong></div>
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="p-3 rounded-3" style="background:#fce8e8;border:1px solid #f5c6c6;">
+          <h6 class="fw-bold text-danger">❌ FLOAT / DOUBLE</h6>
+          <p style="font-size:.83rem;" class="mb-1">Binäre Gleitkommazahlen → Rundungsfehler bei kaufmännischen Berechnungen.</p>
+          <div class="code"><pre><span class="cc">// Klassisches Problem:</span>
+0.1 + 0.2 = <span class="cn">0.300000000004</span></pre></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="p-3 rounded-3" style="background:#e8f5e9;border:1px solid #b7ddb7;">
+          <h6 class="fw-bold text-success">✅ DECIMAL(10,2)</h6>
+          <p style="font-size:.83rem;" class="mb-1">Exakte Festkommazahlen → keine Cent-Abweichungen bei Rechnungen.</p>
+          <div class="code"><pre><span class="cc">// Verwendung in HandwerkerPro:</span>
+DECIMAL(10,2) <span class="cc">← Preise, Summen, MwSt</span>
+DECIMAL(10,3) <span class="cc">← Mengen (0,5 Std, 1,255 kg)</span></pre></div>
+        </div>
+      </div>
+    </div>
+    <p class="mt-3 mb-0" style="font-size:.875rem;">Für ein Handwerker-System, in dem Rechnungen <strong>rechtssicher</strong> erstellt werden müssen, ist DECIMAL zwingend erforderlich.</p>
+  </div>
+</div>
+
+<div class="doc-card">
+  <div class="card-header"><i class="bi bi-list-check text-primary me-2"></i><strong>Weitere wichtige Datentypen</strong></div>
+  <div class="card-body">
+    <table class="table table-sm param-table mb-0">
+      <thead><tr><th>Datentyp</th><th>Einsatz in HandwerkerPro</th><th>Begründung</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>ENUM</code></td>
+          <td>status, rolle, typ</td>
+          <td>Stellt sicher, dass nur vordefinierte Werte eingetragen werden (z.B. Rolle kann nicht "Chef" sein)</td>
+        </tr>
+        <tr>
+          <td><code>BOOLEAN</code></td>
+          <td>ist_stammkunde, aktiv</td>
+          <td>Intern TINYINT(1) — ideal für Ja/Nein-Werte</td>
+        </tr>
+        <tr>
+          <td><code>DATETIME</code></td>
+          <td>Login-Log, Erstellung, Termine</td>
+          <td>Für Protokolle mit genauem Zeitpunkt</td>
+        </tr>
+        <tr>
+          <td><code>DATE</code></td>
+          <td>Rechnungsdatum, Fälligkeitsdatum</td>
+          <td>Für reine Kalendertage ohne Uhrzeit</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="s2-constraints" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">Erklärung der wichtigsten Constraints</h5>
+  <div class="doc-card">
+    <div class="card-body">
+      <p style="font-size:.875rem;">Constraints sichern die <strong>Datenintegrität</strong>. Ohne sie würde die Datenbank schnell inkonsistent.</p>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <table class="table table-sm param-table mb-0">
+            <thead><tr><th>Constraint</th><th>Wirkung</th></tr></thead>
+            <tbody>
+              <tr><td><code>PRIMARY KEY</code></td><td>Identifiziert Datensatz eindeutig, verhindert Dubletten</td></tr>
+              <tr><td><code>FOREIGN KEY</code></td><td>Verknüpft Tabellen, verhindert Waisen-Datensätze</td></tr>
+              <tr><td><code>ON DELETE CASCADE</code></td><td>Löscht automatisch Adressen/Kontakte wenn Kunde gelöscht wird</td></tr>
+              <tr><td><code>ON DELETE SET NULL</code></td><td>login_log bleibt erhalten, mitarbeiter_id wird NULL (Historie)</td></tr>
+              <tr><td><code>CHECK</code></td><td>Logikwächter: netto_summe ≥ 0, end_datetime &gt; start_datetime</td></tr>
+              <tr><td><code>UNIQUE</code></td><td>Email, auftrag_nr darf systemweit nur einmal vorkommen</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-6">
+          <div class="code">
+<pre><span class="cc">-- Beispiel: Fremdschlüssel mit Cascade</span>
+<span class="ckw">ALTER TABLE</span> kunden_adressen
+  <span class="ckw">ADD CONSTRAINT</span> fk_adr_kunde
+  <span class="ckw">FOREIGN KEY</span> (kunden_id)
+  <span class="ckw">REFERENCES</span> kunden(kunden_id)
+  <span class="ckw">ON DELETE CASCADE</span>;
+
+<span class="cc">-- CHECK Constraint</span>
+<span class="ckw">CHECK</span> (end_datetime > start_datetime)
+<span class="ckw">CHECK</span> (netto_summe >= 0)</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s2-installation" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">Installation der Datenbank</h5>
+  <div class="doc-card">
+    <div class="card-body">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h6>Voraussetzungen</h6>
+          <p style="font-size:.875rem;">MySQL-Server (z.B. via XAMPP, MariaDB oder Docker) + ein DB-Client (phpMyAdmin, MySQL Workbench, DBeaver oder Konsole).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h6>Datenbankstruktur erstellen</h6>
+          <div class="code"><pre><span class="cc">-- Zuerst: Struktur anlegen</span>
+<span class="ckw">SOURCE</span> create_db.sql;</pre></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h6>Testdaten einspielen</h6>
+          <div class="code"><pre><span class="cc">-- Danach: Testdaten einfügen</span>
+<span class="ckw">SOURCE</span> test_data.sql;</pre></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h6>Verbindung prüfen (Konsole)</h6>
+          <div class="code"><pre>mysql -u dein_benutzer -p
+<span class="ckw">USE</span> handwerkerpro_db;
+<span class="ckw">SHOW TABLES</span>;
+<span class="ckw">SELECT</span> * <span class="ckw">FROM</span> mitarbeiter;</pre></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h6>Erfolgskontrolle</h6>
+          <p style="font-size:.875rem;" class="mb-2">Wenn folgende Abfrage 10 Einträge mit verschiedenen Status-Werten liefert, war die Installation erfolgreich:</p>
+          <div class="code"><pre><span class="ckw">SELECT</span> * <span class="ckw">FROM</span> auftrag; <span class="cc">-- Erwartung: 10 Einträge</span></pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="sprint-divider">
+
+<!-- ══════════════════════════════════════════════
+     SPRINT 3 — VIEWS & QUERIES
+══════════════════════════════════════════════ -->
+<div class="sprint-header sh-s3 section-anchor" id="s3-tagesgeschaeft">
+  <div class="sprint-num">03</div>
+  <div>
+    <h3>Views & Query-Dokumentation</h3>
+    <p>Tagesgeschäft · Wochenplanung · Monatsreporting · Material & Lager</p>
+  </div>
+</div>
+
+<h5 class="fw-bold mb-3">1. Tagesgeschäft — schneller Überblick</h5>
+
+<div class="doc-card">
+  <div class="card-header"><i class="bi bi-clock-history text-success me-2"></i><strong>view_wartende_kunden</strong></div>
+  <div class="card-body">
+    <p style="font-size:.875rem;"><strong>Was:</strong> Alle Anfragen mit Status <code>neu</code>, sortiert nach Wartezeit. <strong>Wofür:</strong> Schnelle Reaktion auf Neukunden.</p>
+    <table class="table table-sm param-table mb-0">
+      <thead><tr><th>kunden_id</th><th>kunde</th><th>anfrage_titel</th><th>erstellt_am</th><th>tage_warten</th></tr></thead>
+      <tbody>
+        <tr><td>7</td><td>Bauhaus AG</td><td>Industrie-Wartung Q1</td><td>2026-02-15</td><td>15</td></tr>
+        <tr><td>6</td><td>Dieter Bohlen</td><td>Leitung verstopft</td><td>2026-02-10</td><td>20</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="doc-card">
+  <div class="card-header"><i class="bi bi-exclamation-triangle text-warning me-2"></i><strong>view_ueberfaellige_rechnungen</strong></div>
+  <div class="card-body">
+    <p style="font-size:.875rem;"><strong>Was:</strong> Offene Rechnungen über dem Fälligkeitsdatum. <strong>Wofür:</strong> Liquiditätskontrolle und Mahnwesen.</p>
+    <table class="table table-sm param-table mb-0">
+      <thead><tr><th>rechnung_id</th><th>faellig_am</th><th>tage_verzug</th><th>brutto_betrag</th></tr></thead>
+      <tbody>
+        <tr><td>4</td><td>2026-03-01</td><td>1</td><td>214,20 €</td></tr>
+        <tr><td>10</td><td>2026-02-24</td><td>6</td><td>450,00 €</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="doc-card">
+  <div class="card-header"><i class="bi bi-calendar-check text-success me-2"></i><strong>view_tagesplan_mitarbeiter</strong></div>
+  <div class="card-body">
+    <p style="font-size:.875rem;"><strong>Was:</strong> Alle Termine für den heutigen Tag. <strong>Wofür:</strong> Einsatzplanung.</p>
+    <table class="table table-sm param-table mb-0">
+      <thead><tr><th>mitarbeiter</th><th>start_datetime</th><th>end_datetime</th><th>auftrag</th><th>prioritaet</th></tr></thead>
+      <tbody>
+        <tr><td>Max Mustermann</td><td>11:00:00</td><td>14:00:00</td><td>Leitung verstopft</td><td>normal</td></tr>
+        <tr><td>Lena Zimmer</td><td>09:00:00</td><td>17:00:00</td><td>Industrie-Wartung</td><td>dringend</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="s3-woche" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">2. Wochenplanung — Ressourcen & Material</h5>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-header"><i class="bi bi-calendar-week text-success me-2"></i><strong>view_wochenuebersicht_auftraege</strong></div>
+      <div class="card-body">
+        <p style="font-size:.875rem;">Alle Aufträge, die diese Woche aktiv bearbeitet werden.</p>
+        <table class="table table-sm param-table mb-0">
+          <thead><tr><th>auftrag_nr</th><th>titel</th><th>status</th><th>prioritaet</th></tr></thead>
+          <tbody>
+            <tr><td>AUF-011</td><td>Leitung verstopft</td><td>neu</td><td>normal</td></tr>
+            <tr><td>AUF-012</td><td>Industrie-Wartung</td><td>neu</td><td>dringend</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-header"><i class="bi bi-person-fill-gear text-success me-2"></i><strong>view_mitarbeiter_auslastung_woche</strong></div>
+      <div class="card-body">
+        <p style="font-size:.875rem;">Geplante Stunden pro Mitarbeiter für die aktuelle KW.</p>
+        <table class="table table-sm param-table mb-0">
+          <thead><tr><th>vorname</th><th>nachname</th><th>geplante_stunden</th></tr></thead>
+          <tbody>
+            <tr><td>Lena</td><td>Zimmer</td><td>38 h</td></tr>
+            <tr><td>Klaus</td><td>Bauer</td><td>12 h</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="doc-card">
+      <div class="card-header"><i class="bi bi-box-seam text-success me-2"></i><strong>view_materialbedarf_woche</strong></div>
+      <div class="card-body">
+        <p style="font-size:.875rem;">Benötigtes Material vs. aktueller Lagerbestand für die Woche — ermöglicht vorausschauende Beschaffung.</p>
+        <table class="table table-sm param-table mb-0">
+          <thead><tr><th>name</th><th>benoetigte_menge</th><th>aktueller_bestand</th><th>einheit</th></tr></thead>
+          <tbody>
+            <tr><td>Kupferrohr 15mm</td><td>10.00</td><td>100</td><td>Meter</td></tr>
+            <tr><td>Heizungspumpe</td><td>1.00</td><td>4</td><td>Stück</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s3-monat" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">3. Monatsreporting — Erfolgskontrolle</h5>
+</div>
+
+<div class="doc-card">
+  <div class="card-header"><i class="bi bi-graph-up-arrow text-success me-2"></i><strong>view_monatsumsatz_mitarbeiter</strong></div>
+  <div class="card-body">
+    <p style="font-size:.875rem;"><strong>Was:</strong> Netto-Umsatz pro Mitarbeiter für den laufenden Monat. <strong>Wofür:</strong> Faire Leistungsbewertung und Provisionsberechnung.</p>
+    <div class="p-3 mb-3 rounded-3" style="background:#f0f4ff;border:1px solid #c7d3ff;font-size:.83rem;">
+      <strong>Technische Besonderheit:</strong> Durch <code>SELECT DISTINCT mitarbeiter_id, auftrag_id</code> wird sichergestellt, dass ein Auftrag dem Mitarbeiter nur einmal zugerechnet wird, auch wenn er mehrfach vor Ort war. Verhindert künstliche Aufblähung der Umsatzzahlen.
+    </div>
+    <table class="table table-sm param-table mb-0">
+      <thead><tr><th>vorname</th><th>nachname</th><th>monats_umsatz</th></tr></thead>
+      <tbody>
+        <tr><td>Lena</td><td>Zimmer</td><td>1.450,00 €</td></tr>
+        <tr><td>Klaus</td><td>Bauer</td><td>1.100,00 €</td></tr>
+        <tr><td>Max</td><td>Mustermann</td><td>920,00 €</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-header"><i class="bi bi-stopwatch text-success me-2"></i><strong>view_durchschnittliche_bearbeitungszeit</strong></div>
+      <div class="card-body">
+        <p style="font-size:.875rem;">Mittlere Dauer in Tagen von Anfrage bis <code>abgeschlossen_am</code>.</p>
+        <table class="table table-sm param-table">
+          <thead><tr><th>avg_tage_bis_abschluss</th></tr></thead>
+          <tbody><tr><td><strong>6.45</strong></td></tr></tbody>
+        </table>
+        <p style="font-size:.82rem;" class="text-muted mb-0">Das Feld <code>abgeschlossen_am</code> wurde explizit eingeführt um präzise Messung zu ermöglichen.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-header"><i class="bi bi-trophy text-success me-2"></i><strong>view_top_10_kunden</strong></div>
+      <div class="card-body">
+        <p style="font-size:.875rem;">Wertvollste Kunden mit Klarnamen nach Gesamtumsatz.</p>
+        <table class="table table-sm param-table mb-0">
+          <thead><tr><th>kunden_name</th><th>gesamt_umsatz</th></tr></thead>
+          <tbody>
+            <tr><td>Berger Bau GmbH</td><td>4.250,00 €</td></tr>
+            <tr><td>Bauhaus AG</td><td>2.100,00 €</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s3-lager" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">4. Material & Lager-Views</h5>
+</div>
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-header"><i class="bi bi-exclamation-circle text-danger me-2"></i><strong>view_material_nachbestellen</strong></div>
+      <div class="card-body">
+        <p style="font-size:.875rem;">Artikel unter <strong>5 Einheiten</strong> Lagerbestand.</p>
+        <table class="table table-sm param-table mb-0">
+          <thead><tr><th>name</th><th>lagerbestand</th><th>einheit</th></tr></thead>
+          <tbody>
+            <tr><td>Heizungspumpe</td><td>4</td><td>Stück</td></tr>
+            <tr><td>Siphon flexibel</td><td>2</td><td>Stück</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-header"><i class="bi bi-bar-chart text-success me-2"></i><strong>view_meistverwendete_materialien</strong></div>
+      <div class="card-body">
+        <p style="font-size:.875rem;">Ranking nach Gesamtverbrauch über alle Aufträge.</p>
+        <table class="table table-sm param-table mb-0">
+          <thead><tr><th>name</th><th>gesamt_verbrauch</th></tr></thead>
+          <tbody>
+            <tr><td>Dichtungssatz</td><td>54.00</td></tr>
+            <tr><td>Kupferrohr 15mm</td><td>45.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s3-zusammenfassung" class="section-anchor mt-4">
+  <div class="doc-card">
+    <div class="card-header"><i class="bi bi-check2-all text-success me-2"></i><strong>Technische Zusammenfassung</strong></div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <h6 class="fw-bold">Doppelzählungen eliminiert</h6>
+          <p style="font-size:.83rem;">Kombination aus Subquery (<code>GROUP BY r.auftrag_id</code>) und <code>SELECT DISTINCT mitarbeiter_id, auftrag_id</code> — ein Umsatz wird pro Mitarbeiter und Auftrag exakt einmal gewertet.</p>
+          <h6 class="fw-bold">Performance-Indizes</h6>
+          <p style="font-size:.83rem;"><code>idx_termin_start</code> und <code>idx_rechnung_faellig</code> stellen sicher dass Joins und Filter auch bei großen Datensätzen performant bleiben.</p>
+        </div>
+        <div class="col-md-6">
+          <h6 class="fw-bold">Datenintegrität 100%</h6>
+          <p style="font-size:.83rem;">Feld <code>abgeschlossen_am</code> ermöglicht präzise Bearbeitungszeitenmessung — nicht verfälschbar durch nachträgliche Notizen.</p>
+          <h6 class="fw-bold">Struktur & Benennung</h6>
+          <p style="font-size:.83rem;">Alle Views sprechend benannt (<code>view_...</code>), logisch gegliedert und durchgehend kommentiert. Modularer Aufbau erleichtert zukünftige Dashboard-Erweiterungen.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="sprint-divider">
+
+<!-- ══════════════════════════════════════════════
+     SPRINT 4 — AUTOMATISIERUNG
+══════════════════════════════════════════════ -->
+<div class="sprint-header sh-s4 section-anchor" id="s4-procedures">
+  <div class="sprint-num">04</div>
+  <div>
+    <h3>Automatisierung & Integrität</h3>
+    <p>Stored Procedures · Trigger · Transaktionen · Performance · Abnahmetests</p>
+  </div>
+</div>
+
+<h5 class="fw-bold mb-3">1. Stored Procedures</h5>
+<p style="font-size:.875rem;" class="mb-3">Stored Procedures kapseln komplexe Abläufe in einfache Befehle und validieren Eingaben. Alle kritischen Prozeduren sind mit <strong>TRANSACTION + EXIT HANDLER</strong> abgesichert.</p>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-header"><span class="badge bg-warning-subtle text-warning me-2">SP</span><strong>sp_neuer_auftrag</strong></div>
+      <div class="card-body">
+        <p style="font-size:.83rem;" class="mb-2">Erstellt einen neuen Auftrag. Prüft vorab ob <code>kunden_id</code> vorhanden ist.</p>
+        <div class="code"><pre>CALL sp_neuer_auftrag(
+  KundenID,
+  <span class="cv">'Titel'</span>,
+  <span class="cv">'Priorität'</span>
+);</pre></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-header"><span class="badge bg-warning-subtle text-warning me-2">SP</span><strong>sp_material_zuordnen</strong></div>
+      <div class="card-body">
+        <p style="font-size:.83rem;" class="mb-2">Verknüpft Material mit Auftrag. Prüft: Menge positiv + genug Lagerbestand vorhanden.</p>
+        <div class="code"><pre>CALL sp_material_zuordnen(
+  AuftragID,
+  MaterialID,
+  Menge
+);</pre></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-header"><span class="badge bg-warning-subtle text-warning me-2">SP</span><strong>sp_rechnung_bezahlen</strong></div>
+      <div class="card-body">
+        <p style="font-size:.83rem;">Markiert eine Rechnung als bezahlt und aktualisiert den Zeitstempel. Wird auch von REST-API aufgerufen.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-header"><span class="badge bg-warning-subtle text-warning me-2">SP</span><strong>sp_auftrag_abschliessen</strong></div>
+      <div class="card-body">
+        <p style="font-size:.83rem;">Setzt Status auf <code>abgeschlossen</code> und trägt Datum in <code>abgeschlossen_am</code> ein. Löst indirekt den Trigger zur automatischen Rechnungserstellung aus.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-header"><span class="badge bg-warning-subtle text-warning me-2">SP</span><strong>sp_material_nachbestellen</strong></div>
+      <div class="card-body">
+        <p style="font-size:.83rem;" class="mb-2">Erhöht Lagerbestand. Stellt sicher dass keine negativen Mengen nachbestellt werden (Validierung).</p>
+        <div class="code"><pre>CALL sp_material_nachbestellen(
+  MaterialID,
+  Menge  <span class="cc">-- muss > 0 sein</span>
+);</pre></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-header"><span class="badge bg-warning-subtle text-warning me-2">SP</span><strong>sp_update_ueberfaellige_rechnungen</strong></div>
+      <div class="card-body">
+        <p style="font-size:.83rem;">Prüft alle offenen Rechnungen. Wenn <code>faellig_am</code> mehr als 30 Tage zurückliegt → Status automatisch auf <code>überfällig</code>. Für Cron-Job geeignet.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s4-trigger" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">2. Trigger</h5>
+  <p style="font-size:.875rem;" class="mb-3">Trigger reagieren in Echtzeit auf Datenbankänderungen — vollautomatisch, ohne Benutzereingriff.</p>
+  <div class="doc-card">
+    <div class="card-body">
+      <table class="table table-sm trigger-table mb-0">
+        <thead><tr><th>#</th><th>Trigger-Name</th><th>Ereignis</th><th>Automatische Aktion</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>A</td>
+            <td><code>tr_auftrag_nummer_gen</code></td>
+            <td><span class="badge bg-primary-subtle text-primary">BEFORE INSERT</span> Auftrag</td>
+            <td>Erzeugt automatisch Auftragsnummer wie <code>2026-001</code> via LPAD(MAX()+1, 4)</td>
+          </tr>
+          <tr>
+            <td>B</td>
+            <td><code>tr_lager_abbuchen</code></td>
+            <td><span class="badge bg-success-subtle text-success">AFTER INSERT</span> Materialzuordnung</td>
+            <td>Reduziert sofort den Lagerbestand um die verbrauchte Menge</td>
+          </tr>
+          <tr>
+            <td>C</td>
+            <td><code>tr_kunden_loeschschutz</code></td>
+            <td><span class="badge bg-danger-subtle text-danger">BEFORE DELETE</span> Kunden</td>
+            <td>Blockiert Löschen wenn Kunde noch aktive (nicht abgeschlossene) Aufträge hat</td>
+          </tr>
+          <tr>
+            <td>D</td>
+            <td><code>tr_rechnung_status_log</code><br><code>tr_auftrag_status_log</code></td>
+            <td><span class="badge bg-warning-subtle text-warning">AFTER UPDATE</span> Rechnung/Auftrag</td>
+            <td>Schreibt jede Statusänderung automatisch in <code>status_log</code> Tabelle</td>
+          </tr>
+          <tr>
+            <td>E</td>
+            <td><code>tr_auto_rechnung_erstellen</code></td>
+            <td><span class="badge bg-warning-subtle text-warning">AFTER UPDATE</span> Auftrag</td>
+            <td>Erstellt sofort neue Rechnung wenn Auftrag auf <code>abgeschlossen</code> gesetzt wird</td>
+          </tr>
+          <tr>
+            <td>F</td>
+            <td><code>tr_lager_rueckgabe_delete</code></td>
+            <td><span class="badge bg-danger-subtle text-danger">AFTER DELETE</span> Auftrag_Material</td>
+            <td>Material aus Auftrag entfernt → Lagerbestand wird automatisch erhöht</td>
+          </tr>
+          <tr>
+            <td>G</td>
+            <td><code>tr_lager_anpassung_update</code></td>
+            <td><span class="badge bg-warning-subtle text-warning">AFTER UPDATE</span> Auftrag_Material</td>
+            <td>Mengenänderung → Differenz wird automatisch im Lagerbestand korrigiert</td>
+          </tr>
+          <tr>
+            <td>H</td>
+            <td><code>tr_kunden_archivieren</code></td>
+            <td><span class="badge bg-danger-subtle text-danger">BEFORE DELETE</span> Kunden</td>
+            <td>Kopiert Kundendaten unmittelbar vor dem Löschen in <code>kunden_archiv</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="s4-transaction" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">3. Transaktionen</h5>
+  <div class="doc-card">
+    <div class="card-body">
+      <p style="font-size:.875rem;">Kritische Operationen werden durch Transaktionen gesichert. Bei Fehler werden <strong>alle</strong> Teilschritte rückgängig gemacht (Rollback).</p>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <h6 class="fw-bold">Beispiel: Auftrag stornieren</h6>
+          <ol style="font-size:.83rem;">
+            <li>Status wird auf <code>storniert</code> gesetzt</li>
+            <li>Material wird dem Lager wieder gutgeschrieben</li>
+          </ol>
+          <div class="p-3 rounded-3 mt-2" style="background:#f0fff4;border:1px solid #b7e4c7;font-size:.82rem;">
+            <strong>Sicherheit:</strong> Schlägt die Materialrückbuchung fehl, wird auch die Statusänderung nicht gespeichert (Datenkonsistenz durch Rollback).
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="code"><pre><span class="ckw">BEGIN</span>;
+  <span class="cc">-- 1. Status setzen</span>
+  <span class="ckw">UPDATE</span> auftrag
+    <span class="ckw">SET</span> status = <span class="cv">'storniert'</span>
+    <span class="ckw">WHERE</span> auftrag_id = ?;
+
+  <span class="cc">-- 2. Material zurückbuchen</span>
+  <span class="ckw">UPDATE</span> material
+    <span class="ckw">SET</span> lagerbestand = lagerbestand + ?
+    <span class="ckw">WHERE</span> material_id = ?;
+<span class="ckw">COMMIT</span>;
+
+<span class="cc">-- Bei Fehler:</span>
+<span class="ckw">ROLLBACK</span>;</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="s4-indizes" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">4. Performance-Optimierung (Indizes)</h5>
+  <div class="doc-card">
+    <div class="card-body">
+      <table class="table table-sm param-table mb-0">
+        <thead><tr><th>Index</th><th>Tabelle/Spalte</th><th>Optimiert</th><th>Sprint</th></tr></thead>
+        <tbody>
+          <tr><td><code>idx_auftrag_status</code></td><td>auftrag.status</td><td>Suche nach abgeschlossenen/offenen Projekten</td><td>Sprint 3</td></tr>
+          <tr><td><code>idx_termin_start</code></td><td>termin.start_datetime</td><td>Tages-/Wochenplan Joins</td><td>Sprint 3</td></tr>
+          <tr><td><code>idx_rechnung_faellig</code></td><td>rechnung.faellig_am</td><td>30-Tage-Überfälligkeitscheck</td><td>Sprint 3</td></tr>
+          <tr><td><code>idx_rechnung_datum</code></td><td>rechnung.rechnungs_datum</td><td>Datumsbasierte Filterungen</td><td>Sprint 4</td></tr>
+          <tr><td><code>idx_mat_bestand</code></td><td>material.lagerbestand</td><td>Schnelle Bestandsprüfung vor Materialzuordnung</td><td>Sprint 4</td></tr>
+          <tr><td><code>idx_log_zeit</code></td><td>status_log.erstellt_am</td><td>Zeitbasierte Abfragen auf der Log-Tabelle</td><td>Sprint 4</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="s4-tests" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">5. Abnahmetests — Systemvalidierung</h5>
+  <p style="font-size:.875rem;" class="mb-3">Ein stabiles System muss nicht nur unter Normalbedingungen, sondern auch in <strong>Grenzfällen (Edge Cases)</strong> die Datenintegrität wahren.</p>
+
+  <div class="scenario-card" style="border-color:#0ea5e9">
+    <h6><span class="badge bg-info-subtle text-info me-2">Szenario 1</span>Überprüfung des Lagerbestands (Negativtest)</h6>
+    <p style="font-size:.83rem;" class="mb-1"><strong>Vorgang:</strong> <code>CALL sp_material_zuordnen(1, [id], 10)</code> bei einem Material mit Bestand = 5</p>
+    <p style="font-size:.83rem;" class="mb-0"><strong>Erwartung:</strong> <code>SIGNAL SQLSTATE</code> mit Meldung "Nicht genügend Lagerbestand!" — kein neuer Datensatz in <code>auftrag_material</code> (Rollback-Nachweis)</p>
+  </div>
+
+  <div class="scenario-card" style="border-color:#7c3aed">
+    <h6><span class="badge" style="background:#7c3aed22;color:#7c3aed" class="me-2">Szenario 2</span>Kettenreaktion und Fehlerbehandlung</h6>
+    <p style="font-size:.83rem;" class="mb-1"><strong>Vorbereitung:</strong> NOT NULL Spalte zur <code>rechnung</code> Tabelle hinzufügen, die Trigger nicht bedient.</p>
+    <p style="font-size:.83rem;" class="mb-0"><strong>Vorgang:</strong> <code>CALL sp_auftrag_abschliessen(1)</code> — <strong>Erwartung:</strong> EXIT HANDLER verhindert Statusänderung, Rollback auf ursprünglichen Zustand.</p>
+  </div>
+
+  <div class="scenario-card" style="border-color:#10b981">
+    <h6><span class="badge bg-success-subtle text-success me-2">Szenario 3</span>Dublettenprüfung und MAX()-Logik</h6>
+    <p style="font-size:.83rem;" class="mb-1"><strong>Vorgang:</strong> Manuell Auftrag mit Nummer <code>2026-999</code> einfügen, dann <code>sp_neuer_auftrag</code> aufrufen.</p>
+    <p style="font-size:.83rem;" class="mb-0"><strong>Erwartung:</strong> Neuer Auftrag erhält Nummer <code>2026-1000</code> — beweist Stabilität der MAX()-Logik gegenüber COUNT()-Logik.</p>
+  </div>
+
+  <div class="scenario-card" style="border-color:#f59e0b">
+    <h6><span class="badge bg-warning-subtle text-warning me-2">Szenario 4</span>Kundenschutz (Referenzielle Integrität)</h6>
+    <p style="font-size:.83rem;" class="mb-1"><strong>Vorgang:</strong> <code>DELETE FROM kunden WHERE kunden_id = 1</code> bei Kunde mit offenen Aufträgen.</p>
+    <p style="font-size:.83rem;" class="mb-0"><strong>Erwartung:</strong> Trigger <code>tr_kunden_loeschschutz</code> verhindert Löschung und gibt Fehlermeldung aus.</p>
+  </div>
+
+  <div class="scenario-card" style="border-color:#ef4444">
+    <h6><span class="badge bg-danger-subtle text-danger me-2">Szenario 5</span>Zeitbasierte Automatisierung (Mahnwesen)</h6>
+    <p style="font-size:.83rem;" class="mb-1"><strong>Vorbereitung:</strong> <code>faellig_am</code> auf 35 Tage in der Vergangenheit setzen, Status = <code>gesendet</code>.</p>
+    <p style="font-size:.83rem;" class="mb-0"><strong>Erwartung:</strong> <code>CALL sp_update_ueberfaellige_rechnungen()</code> setzt nur diese Rechnung auf <code>überfällig</code>. Statusänderung wird in <code>status_log</code> dokumentiert.</p>
+  </div>
+
+  <div class="scenario-card" style="border-color:#0ea5e9">
+    <h6><span class="badge bg-info-subtle text-info me-2">Szenario 6</span>Atomarität und Fehlerbehandlung (Rollback-Test)</h6>
+    <p style="font-size:.83rem;" class="mb-1"><strong>Vorgang:</strong> <code>sp_material_zuordnen</code> mit nicht existierender <code>auftrag_id</code> aufrufen.</p>
+    <p style="font-size:.83rem;" class="mb-0"><strong>Erwartung:</strong> Fehlermeldung + kein Lagerbestandsabzug (keine halben Datenbankzustände).</p>
+  </div>
+
+  <div class="scenario-card" style="border-color:#7c3aed">
+    <h6><span class="badge" style="background:#7c3aed22;color:#7c3aed">Szenario 7</span>Kontrolle von multiplen Materialien und Gesamtbetrag</h6>
+    <p style="font-size:.83rem;" class="mb-1"><strong>Szenario:</strong> Zwei Materialien zu unterschiedlichen Preisen einem Auftrag hinzufügen.</p>
+    <p style="font-size:.83rem;" class="mb-0"><strong>Erwartung:</strong> Rechnungsbetrag = <code>(Menge1 × Preis1) + (Menge2 × Preis2)</code> — exakt.</p>
+  </div>
+
+  <div class="scenario-card" style="border-color:#10b981">
+    <h6><span class="badge bg-success-subtle text-success me-2">Szenario 8</span>Rückgabe an Lagerbestand nach Stornierung</h6>
+    <p style="font-size:.83rem;" class="mb-1"><strong>Ablauf:</strong> Material zuweisen → Lagerbestandsabzug prüfen → Auftrag stornieren.</p>
+    <p style="font-size:.83rem;" class="mb-0"><strong>Erwartung:</strong> Lagerbestand wird vollständig auf den ursprünglichen Wert zurückgesetzt.</p>
+  </div>
+
+  <div class="scenario-card" style="border-color:#f59e0b">
+    <h6><span class="badge bg-warning-subtle text-warning me-2">Szenario 9</span>Korrektheit der Archivierung</h6>
+    <p style="font-size:.83rem;" class="mb-1"><strong>Ablauf:</strong> Kunden ohne Aufträge löschen.</p>
+    <p style="font-size:.83rem;" class="mb-0"><strong>Erwartung:</strong> Nicht mehr in <code>kunden</code> — aber vollständig mit allen Daten in <code>kunden_archiv</code> vorhanden.</p>
+  </div>
+</div>
+
+<hr class="sprint-divider">
+
+<!-- ══════════════════════════════════════════════
+     SPRINT 5 — REST API
+══════════════════════════════════════════════ -->
+<div class="sprint-header sh-s5 section-anchor" id="s5-uebersicht">
+  <div class="sprint-num">05</div>
+  <div>
+    <h3>REST API — Slim Framework 4</h3>
+    <p>PHP 8.1 · PDO Prepared Statements · Argon2ID · CORS · 22 Endpoints</p>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-body">
+        <h6 class="fw-bold"><i class="bi bi-link-45deg me-2 text-primary"></i>Basis-URL</h6>
+        <div class="code"><pre>http://localhost/api</pre></div>
+        <p class="mt-2 mb-1" style="font-size:.83rem;">Alle Antworten:</p>
+        <div class="code"><pre>Content-Type: application/json; charset=UTF-8</pre></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="doc-card h-100">
+      <div class="card-body">
+        <h6 class="fw-bold"><i class="bi bi-stack me-2 text-primary"></i>Technologie-Stack</h6>
+        <table class="table table-sm mb-0" style="font-size:.83rem;">
+          <tr><td class="text-muted">Framework</td><td><strong>Slim Framework 4</strong></td></tr>
+          <tr><td class="text-muted">Sprache</td><td><strong>PHP 8.1+</strong></td></tr>
+          <tr><td class="text-muted">DB-Zugriff</td><td><strong>PDO (Prepared Statements, kein String-Concat!)</strong></td></tr>
+          <tr><td class="text-muted">Passwort</td><td><strong>Argon2ID / bcrypt</strong></td></tr>
+          <tr><td class="text-muted">Webserver</td><td><strong>Apache + mod_rewrite</strong></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="doc-card mb-3">
+  <div class="card-header"><i class="bi bi-diagram-3 me-2 text-primary"></i><strong>Antwort-Struktur</strong></div>
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-5">
+        <p class="mb-1" style="font-size:.83rem;">✅ Erfolg:</p>
+        <div class="code"><pre>{
+  <span class="ck">"status"</span>:  <span class="cv">"success"</span>,
+  <span class="ck">"message"</span>: <span class="cv">"Beschreibung"</span>,
+  <span class="ck">"data"</span>:    { ... }
+}</pre></div>
+      </div>
+      <div class="col-md-4">
+        <p class="mb-1" style="font-size:.83rem;">❌ Fehler:</p>
+        <div class="code"><pre>{
+  <span class="ck">"status"</span>:  <span class="cv">"error"</span>,
+  <span class="ck">"message"</span>: <span class="cv">"..."</span>,
+  <span class="ck">"details"</span>: { ... }
+}</pre></div>
+      </div>
+      <div class="col-md-3">
+        <p class="mb-1" style="font-size:.83rem;">HTTP-Codes:</p>
+        <div style="font-size:.8rem;line-height:1.8;">
+          <span class="sc sc-2xx">200</span> OK<br>
+          <span class="sc sc-2xx">201</span> Created<br>
+          <span class="sc sc-4xx">400</span> Bad Request<br>
+          <span class="sc sc-4xx">401</span> Unauthorized<br>
+          <span class="sc sc-4xx">403</span> Forbidden<br>
+          <span class="sc sc-4xx">404</span> Not Found<br>
+          <span class="sc sc-4xx">409</span> Conflict<br>
+          <span class="sc sc-4xx">422</span> Unprocessable<br>
+          <span class="sc sc-5xx">500</span> Server Error
+        </div>
+      </div>
+    </div>
+    <h6 class="fw-bold mt-3">Pagination</h6>
+    <div class="code"><pre>GET /api/kunden?page=2&limit=10
+<span class="cc">// Antwort enthält: total, page, limit, pages</span></pre></div>
+  </div>
+</div>
+
+<!-- Installation Slim -->
+<div id="s5-installation" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">Installation (Slim Framework)</h5>
+  <div class="doc-card">
+    <div class="card-body">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h6>Dateien platzieren</h6>
+          <div class="code"><pre>C:\xampp\htdocs\
+└── slim-api\
+    ├── composer.json
+    ├── config\        ← database.php, settings.php
+    ├── public\        ← Apache DocumentRoot
+    └── src\           ← Controllers, Middleware, Models</pre></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h6>Abhängigkeiten installieren</h6>
+          <div class="code"><pre>cd C:\xampp\htdocs\slim-api
+composer install
+<span class="cc">// Installiert: slim/slim, slim/psr7, php-di/php-di, monolog</span></pre></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h6>Apache konfigurieren (httpd-vhosts.conf)</h6>
+          <div class="code"><pre>&lt;VirtualHost *:80&gt;
+    DocumentRoot "C:/xampp/htdocs/slim-api/public"
+    ServerName localhost
+    &lt;Directory "C:/xampp/htdocs/slim-api/public"&gt;
+        AllowOverride All
+        Require all granted
+    &lt;/Directory&gt;
+&lt;/VirtualHost&gt;</pre></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h6>Datenbank-Zugangsdaten anpassen (config/database.php)</h6>
+          <div class="code"><pre>return [
+  <span class="ck">'host'</span> => <span class="cv">'localhost'</span>,
+  <span class="ck">'name'</span> => <span class="cv">'handwerkerpro_db'</span>,
+  <span class="ck">'user'</span> => <span class="cv">'root'</span>,
+  <span class="ck">'pass'</span> => <span class="cv">''</span>,
+];</pre></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h6>Apache restarten → testen</h6>
+          <div class="code"><pre>http://localhost/api
+http://localhost/docs/testclient.html</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Auth Konzept -->
+<div id="s5-auth" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">Authentifizierung & Rollensystem</h5>
+  <div class="doc-card">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="p-3 rounded-3" style="background:#f0f4ff;border:1px solid #c7d3ff;">
+            <h6 class="fw-bold">Methode 1: API-Key Header</h6>
+            <div class="code mt-2"><pre>X-API-Key: admin-key-12345
+<span class="cc">// oder:</span>
+Authorization: Bearer admin-key-12345</pre></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="p-3 rounded-3" style="background:#f0fff4;border:1px solid #b7e4c7;">
+            <h6 class="fw-bold">Methode 2: Session-Login</h6>
+            <div class="code mt-2"><pre>POST /api/auth/login
+{
+  <span class="ck">"email"</span>:    <span class="cv">"..."</span>,
+  <span class="ck">"password"</span>: <span class="cv">"demo123"</span>
+}</pre></div>
+          </div>
+        </div>
+      </div>
+      <h6 class="fw-bold mt-4 mb-2">Demo API-Keys</h6>
+      <table class="table table-sm param-table mb-3">
+        <thead><tr><th>API-Key</th><th>Rolle</th><th>Berechtigungen</th></tr></thead>
+        <tbody>
+          <tr><td><code>admin-key-12345</code></td><td><span class="role role-admin">admin</span></td><td>Vollzugriff inkl. Material löschen</td></tr>
+          <tr><td><code>meister-key-67890</code></td><td><span class="role role-meister">meister</span></td><td>Alles außer Material löschen</td></tr>
+          <tr><td><code>geselle-key-11111</code></td><td><span class="role role-geselle">geselle</span></td><td>Lesen, Erstellen, Bearbeiten</td></tr>
+        </tbody>
+      </table>
+      <div class="code"><pre><span class="cc">// Rollenhierarchie (höher = mehr Rechte):</span>
+admin (5) > meister (4) > geselle (3) > azubi (2) > buero (1)
+
+GET    → alle Rollen
+POST   → geselle+
+PUT    → geselle+
+DELETE → meister+ (kunden/auftraege), admin (material)</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- Sicherheit -->
+<div id="s5-sicherheit" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">Sicherheit</h5>
+  <div class="doc-card">
+    <div class="card-body">
+      <div class="row g-4 text-center">
+        <div class="col-md-3">
+          <i class="bi bi-shield-check" style="font-size:2rem;color:var(--accent)"></i>
+          <h6 class="fw-bold mt-2">Prepared Statements</h6>
+          <p style="font-size:.8rem;" class="text-muted">PDO mit <code>ATTR_EMULATE_PREPARES=false</code>. String-Concatenation für SQL ist vollständig verboten.</p>
+        </div>
+        <div class="col-md-3">
+          <i class="bi bi-hash" style="font-size:2rem;color:var(--accent)"></i>
+          <h6 class="fw-bold mt-2">Passwort-Hashing</h6>
+          <p style="font-size:.8rem;" class="text-muted">Argon2ID via <code>password_hash()</code> und <code>password_verify()</code>. Niemals Klartext-Passwörter.</p>
+        </div>
+        <div class="col-md-3">
+          <i class="bi bi-funnel" style="font-size:2rem;color:var(--accent)"></i>
+          <h6 class="fw-bold mt-2">Input-Sanitizing</h6>
+          <p style="font-size:.8rem;" class="text-muted">Alle Eingaben via <code>strip_tags()</code> + <code>trim()</code> (XSS-Schutz). ENUM-Werte per Whitelist validiert.</p>
+        </div>
+        <div class="col-md-3">
+          <i class="bi bi-globe" style="font-size:2rem;color:var(--accent)"></i>
+          <h6 class="fw-bold mt-2">CORS-Header</h6>
+          <p style="font-size:.8rem;" class="text-muted"><code>CorsMiddleware</code> setzt alle nötigen Header. OPTIONS Preflight wird sofort beantwortet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Fehlerbehandlung -->
+<div id="s5-fehler" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3">Fehlerbehandlung & Validierung</h5>
+  <div class="doc-card">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <h6 class="fw-bold">Validierungsregeln</h6>
+          <ul style="font-size:.83rem;">
+            <li>Pflichtfelder fehlen → <span class="sc sc-4xx">422</span></li>
+            <li>ENUM-Wert nicht erlaubt → <span class="sc sc-4xx">422</span></li>
+            <li>Datum ungültig (YYYY-MM-DD) → <span class="sc sc-4xx">422</span></li>
+            <li>Preis/Menge ≤ 0 → <span class="sc sc-4xx">422</span></li>
+            <li>E-Mail invalid → <span class="sc sc-4xx">422</span></li>
+            <li>Ressource nicht gefunden → <span class="sc sc-4xx">404</span></li>
+            <li>DB-Trigger blockiert (offene Aufträge) → <span class="sc sc-4xx">409</span></li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <div class="code"><pre><span class="cc">// 422 mit Details:</span>
+{
+  <span class="ck">"status"</span>:  <span class="cv">"error"</span>,
+  <span class="ck">"message"</span>: <span class="cv">"Pflichtfelder fehlen."</span>,
+  <span class="ck">"details"</span>: {
+    <span class="ck">"fehlende_felder"</span>: [
+      <span class="cv">"vorname"</span>,
+      <span class="cv">"nachname"</span>
+    ]
+  }
+}</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ENDPOINTS -->
+<div id="s5-ep-auth" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3"><i class="bi bi-key me-2 text-danger"></i>Endpoints: Auth</h5>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-POST">POST</span><span class="url ms-2">/api/auth/login</span><span class="ms-auto badge bg-success-subtle text-success">Öffentlich</span></div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="code"><pre>curl -X POST http://localhost/api/auth/login \
+  -H <span class="cv">"Content-Type: application/json"</span> \
+  -d '{
+    <span class="ck">"email"</span>:    <span class="cv">"m.mustermann@hw.de"</span>,
+    <span class="ck">"password"</span>: <span class="cv">"demo123"</span>
+  }'</pre></div>
+        </div>
+        <div class="col-md-6">
+          <div class="code"><pre><span class="cc">// Antwort 200:</span>
+{
+  <span class="ck">"mitarbeiter_id"</span>: <span class="cn">1</span>,
+  <span class="ck">"rolle"</span>: <span class="cv">"admin"</span>,
+  <span class="ck">"session_aktiv"</span>: <span class="cb">true</span>
+}</pre></div>
+        </div>
+      </div>
+      <small class="text-muted">Fehler: <span class="sc sc-4xx">401</span> falsches Passwort · <span class="sc sc-4xx">422</span> fehlende Felder</small>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-GET">GET</span><span class="url ms-2">/api/auth/me</span><span class="ms-auto role role-all">alle Rollen</span></div>
+    <div class="card-body">
+      <div class="code"><pre>curl http://localhost/api/auth/me -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-POST">POST</span><span class="url ms-2">/api/auth/logout</span><span class="ms-auto role role-all">alle Rollen</span></div>
+    <div class="card-body">
+      <div class="code"><pre>curl -X POST http://localhost/api/auth/logout -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+</div>
+
+<div id="s5-ep-dashboard" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3"><i class="bi bi-speedometer2 me-2 text-danger"></i>Endpoints: Dashboard</h5>
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-GET">GET</span><span class="url ms-2">/api/dashboard</span><span class="ms-auto role role-all">alle Rollen</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;">KPIs, heutige Termine, Notfall-Aufträge, kritische Lagerbestände, Mitarbeiterauslastung.</p>
+      <div class="code"><pre>curl http://localhost/api/dashboard -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+</div>
+
+<div id="s5-ep-kunden" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3"><i class="bi bi-people me-2 text-danger"></i>Endpoints: Kunden</h5>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-GET">GET</span><span class="url ms-2">/api/kunden</span><span class="ms-auto role role-all">alle Rollen</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-2">Filter: <code>typ</code> (privat/firma), <code>stammkunde</code> (bool), <code>search</code>, <code>page</code>, <code>limit</code></p>
+      <div class="code"><pre>curl "http://localhost/api/kunden?typ=firma&stammkunde=true" \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-GET">GET</span><span class="url ms-2">/api/kunden/{id}</span><span class="ms-auto role role-all">alle Rollen</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;">Vollständiger Datensatz inkl. Kontakte, Adressen, Personen/Firmen-Details.</p>
+      <div class="code"><pre>curl http://localhost/api/kunden/1 -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-GET">GET</span><span class="url ms-2">/api/kunden/{id}/auftraege</span><span class="ms-auto role role-all">alle Rollen</span></div>
+    <div class="card-body">
+      <div class="code"><pre>curl http://localhost/api/kunden/1/auftraege -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-POST">POST</span><span class="url ms-2">/api/kunden</span><span class="ms-auto role role-geselle">geselle+</span></div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <p class="mb-1" style="font-size:.83rem;">Privatkunde:</p>
+          <div class="code"><pre>{ <span class="ck">"typ"</span>: <span class="cv">"privat"</span>, <span class="ck">"vorname"</span>: <span class="cv">"Hans"</span>,
+  <span class="ck">"nachname"</span>: <span class="cv">"Maier"</span>,
+  <span class="ck">"kontakt_typ"</span>: <span class="cv">"Mobil"</span>,
+  <span class="ck">"kontakt_wert"</span>: <span class="cv">"0170-1234567"</span> }</pre></div>
+        </div>
+        <div class="col-md-6">
+          <p class="mb-1" style="font-size:.83rem;">Firmenkunde:</p>
+          <div class="code"><pre>{ <span class="ck">"typ"</span>: <span class="cv">"firma"</span>,
+  <span class="ck">"firmenname"</span>: <span class="cv">"Muster GmbH"</span>,
+  <span class="ck">"ansprechpartner"</span>: <span class="cv">"Herr Koch"</span>,
+  <span class="ck">"ust_id"</span>: <span class="cv">"DE123456789"</span> }</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-PUT">PUT</span><span class="url ms-2">/api/kunden/{id}</span><span class="ms-auto role role-geselle">geselle+</span></div>
+    <div class="card-body">
+      <div class="code"><pre>curl -X PUT http://localhost/api/kunden/1 \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span> \
+  -d '{ <span class="ck">"ist_stammkunde"</span>: <span class="cb">true</span>, <span class="ck">"notizen"</span>: <span class="cv">"VIP-Kunde"</span> }'</pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-DELETE">DELETE</span><span class="url ms-2">/api/kunden/{id}</span><span class="ms-auto role role-meister">meister+</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-1">Trigger <code>tr_kunden_loeschschutz</code> blockiert bei offenen Aufträgen → <span class="sc sc-4xx">409</span></p>
+      <div class="code"><pre>curl -X DELETE http://localhost/api/kunden/5 -H <span class="cv">"X-API-Key: meister-key-67890"</span></pre></div>
+    </div>
+  </div>
+</div>
+
+<div id="s5-ep-auftraege" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3"><i class="bi bi-clipboard-check me-2 text-danger"></i>Endpoints: Aufträge</h5>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-GET">GET</span><span class="url ms-2">/api/auftraege</span><span class="ms-auto role role-all">alle Rollen</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-2">Filter: <code>status</code> (kommagetrennt), <code>prioritaet</code>, <code>kunden_id</code>, <code>datum_von</code>, <code>datum_bis</code>, <code>search</code>, <code>sort</code>, <code>dir</code></p>
+      <div class="code"><pre>curl "http://localhost/api/auftraege?status=neu,aktiv&prioritaet=notfall" \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-POST">POST</span><span class="url ms-2">/api/auftraege</span><span class="ms-auto role role-geselle">geselle+</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-2">Via <code>sp_neuer_auftrag</code>. Auftragsnummer automatisch via Trigger. Pflicht: <code>kunden_id</code>, <code>titel</code> (3–150 Zeichen).</p>
+      <div class="code"><pre>curl -X POST http://localhost/api/auftraege \
+  -H <span class="cv">"X-API-Key: geselle-key-11111"</span> \
+  -d '{
+    <span class="ck">"kunden_id"</span>:  <span class="cn">1</span>,
+    <span class="ck">"titel"</span>:      <span class="cv">"Heizungsreparatur Keller"</span>,
+    <span class="ck">"prioritaet"</span>: <span class="cv">"dringend"</span>
+  }'</pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-PUT">PUT</span><span class="url ms-2">/api/auftraege/{id}/status</span><span class="ms-auto role role-geselle">geselle+</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-2"><strong>Spezialverhalten:</strong> <code>abgeschlossen</code> → ruft <code>sp_auftrag_abschliessen</code> auf → Rechnung wird automatisch erstellt. <code>storniert</code> → <code>sp_auftrag_stornieren</code> → Material zurückgebucht.</p>
+      <div class="code"><pre>curl -X PUT http://localhost/api/auftraege/3/status \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span> \
+  -d '{ <span class="ck">"status"</span>: <span class="cv">"abgeschlossen"</span> }'</pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-DELETE">DELETE</span><span class="url ms-2">/api/auftraege/{id}</span><span class="ms-auto role role-meister">meister+</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-1">Abgerechnete Aufträge können nicht gelöscht werden → <span class="sc sc-4xx">409</span></p>
+      <div class="code"><pre>curl -X DELETE http://localhost/api/auftraege/15 -H <span class="cv">"X-API-Key: meister-key-67890"</span></pre></div>
+    </div>
+  </div>
+</div>
+
+<div id="s5-ep-rechnungen" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3"><i class="bi bi-receipt me-2 text-danger"></i>Endpoints: Rechnungen</h5>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-GET">GET</span><span class="url ms-2">/api/rechnungen</span><span class="ms-auto role role-all">alle Rollen</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-2">Filter: <code>status</code>, <code>kunden_id</code>, <code>ueberfaellig=true</code>, <code>datum_von</code>, <code>datum_bis</code></p>
+      <div class="code"><pre>curl "http://localhost/api/rechnungen?ueberfaellig=true" \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-POST">POST</span><span class="url ms-2">/api/rechnungen/{id}/bezahlen</span><span class="ms-auto role role-all">alle Rollen</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-1">Via <code>sp_rechnung_bezahlen</code>. Bereits bezahlte Rechnung → <span class="sc sc-4xx">409</span></p>
+      <div class="code"><pre>curl -X POST http://localhost/api/rechnungen/2/bezahlen \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-PUT">PUT</span><span class="url ms-2">/api/rechnungen/{id}</span><span class="ms-auto role role-geselle">geselle+</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-1">Aktualisierbar: <code>status</code>, <code>faellig_am</code> (Format: YYYY-MM-DD)</p>
+      <div class="code"><pre>curl -X PUT http://localhost/api/rechnungen/2 \
+  -d '{ <span class="ck">"status"</span>: <span class="cv">"gesendet"</span>, <span class="ck">"faellig_am"</span>: <span class="cv">"2026-04-01"</span> }'</pre></div>
+    </div>
+  </div>
+</div>
+
+<div id="s5-ep-material" class="section-anchor mt-4">
+  <h5 class="fw-bold mb-3"><i class="bi bi-boxes me-2 text-danger"></i>Endpoints: Material</h5>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-GET">GET</span><span class="url ms-2">/api/material</span><span class="ms-auto role role-all">alle Rollen</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-2">Filter: <code>search</code>, <code>niedrig_bestand</code>, <code>bestellliste</code>, <code>nachbestellen</code>, <code>meistverwendet</code></p>
+      <div class="code"><pre>curl "http://localhost/api/material?niedrig_bestand=1" \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span>
+
+curl "http://localhost/api/material?bestellliste=1" \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-POST">POST</span><span class="url ms-2">/api/material</span><span class="ms-auto role role-meister">meister+</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-2">Pflicht: <code>name</code>, <code>preis_pro_einheit</code> (&gt;0). Lagerbestand darf nicht negativ sein.</p>
+      <div class="code"><pre>curl -X POST http://localhost/api/material \
+  -H <span class="cv">"X-API-Key: meister-key-67890"</span> \
+  -d '{
+    <span class="ck">"name"</span>:               <span class="cv">"Kupferrohr 22mm"</span>,
+    <span class="ck">"einheit"</span>:           <span class="cv">"Meter"</span>,
+    <span class="ck">"lagerbestand"</span>:      <span class="cn">50</span>,
+    <span class="ck">"preis_pro_einheit"</span>:  <span class="cn">15.90</span>
+  }'</pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-POST">POST</span><span class="url ms-2">/api/material/{id}/nachbestellen</span><span class="ms-auto role role-geselle">geselle+</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-1">Via <code>sp_material_nachbestellen</code>. Menge muss &gt; 0 sein.</p>
+      <div class="code"><pre>curl -X POST http://localhost/api/material/4/nachbestellen \
+  -d '{ <span class="ck">"menge"</span>: <span class="cn">20</span> }'</pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header"><span class="m m-DELETE">DELETE</span><span class="url ms-2">/api/material/{id}</span><span class="ms-auto role role-admin">admin</span></div>
+    <div class="card-body">
+      <p style="font-size:.83rem;" class="mb-1">Schlägt fehl wenn Material in Aufträgen verwendet wird → <span class="sc sc-4xx">409</span></p>
+      <div class="code"><pre>curl -X DELETE http://localhost/api/material/6 -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="text-center text-muted py-5" style="font-size:.8rem;">
+  <div class="mb-1">HandwerkerPro — Gesamtdokumentation Sprint 1–5</div>
+  <div>MariaDB · PHP 8.1 · Slim Framework 4 · PDO · Argon2ID · CORS</div>
+</div>
+
+</div><!-- /main -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const sections = document.querySelectorAll('.section-anchor');
+const links    = document.querySelectorAll('.sidebar .nav-link[href^="#"]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 80) current = '#' + s.id; });
+  links.forEach(l => {
+    l.classList.remove('active');
+    if (l.getAttribute('href') === current) l.classList.add('active');
+  });
+}, { passive: true });
+</script>
+</body>
+</html>
