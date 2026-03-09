@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HandwerkerPro API — Dokumentation v1.0</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+:root { --accent:#4f6ef7; --dark:#1a1f2e; --success:#10b981; }
+body { font-family:'Segoe UI',sans-serif; background:#f0f2f5; color:#1a1f2e; }
+
+/* SIDEBAR */
+.sidebar { position:fixed;top:0;left:0;width:260px;height:100vh;background:var(--dark);overflow-y:auto;z-index:100;padding-bottom:40px; }
+.sidebar .brand { padding:20px;border-bottom:1px solid rgba(255,255,255,.08); }
+.sidebar .brand h5 { color:#fff;font-weight:700;margin:0;font-size:1rem; }
+.sidebar .brand small { color:#6b7598;font-size:.75rem; }
+.sidebar .section-title { color:#4a5278;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 20px 4px; }
+.sidebar .nav-link { color:#9aa3c2;padding:7px 20px;font-size:.83rem;display:flex;align-items:center;gap:9px;border-radius:7px;margin:1px 10px;transition:.15s; }
+.sidebar .nav-link:hover { background:#2d3452;color:#fff; }
+.sidebar .nav-link.active { background:var(--accent);color:#fff; }
+
+/* MAIN */
+.main { margin-left:260px;padding:36px 40px; }
+.section-anchor { scroll-margin-top:24px; }
+
+/* HERO */
+.hero { background:linear-gradient(135deg,#1a1f2e 0%,#2d3452 100%);color:#fff;border-radius:16px;padding:36px;margin-bottom:36px; }
+.hero h2 { font-weight:800;font-size:1.8rem; }
+
+/* CARDS */
+.doc-card { background:#fff;border-radius:14px;border:none;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:16px;overflow:hidden; }
+.doc-card .card-header { padding:14px 20px;background:#f8f9fa;border-bottom:1px solid #eef0f5;display:flex;align-items:center;gap:12px; }
+.doc-card .card-body { padding:20px; }
+
+/* METHOD BADGES */
+.m { padding:4px 11px;border-radius:6px;font-weight:700;font-size:.76rem;min-width:64px;text-align:center;letter-spacing:.02em; }
+.m-GET    { background:#e8f5e9;color:#2e7d32; }
+.m-POST   { background:#e3f2fd;color:#1565c0; }
+.m-PUT    { background:#fff3e0;color:#e65100; }
+.m-DELETE { background:#fce8e8;color:#c62828; }
+
+/* URL */
+.url { font-family:'Courier New',monospace;font-size:.93rem;font-weight:600;color:#1a1f2e; }
+
+/* CODE BLOCKS */
+.code { background:#1e1e2e;color:#cdd6f4;border-radius:10px;padding:16px 18px;font-size:.82rem;font-family:'Courier New',monospace;overflow-x:auto;line-height:1.6; }
+.code pre { margin:0;white-space:pre-wrap; }
+.ck  { color:#89b4fa; }  /* key */
+.cv  { color:#a6e3a1; }  /* string value */
+.cn  { color:#fab387; }  /* number */
+.cb  { color:#f38ba8; }  /* bool/null */
+.cc  { color:#6c7086; }  /* comment */
+
+/* TABLES */
+.param-table { font-size:.84rem; }
+.param-table th { background:#f4f6fb;font-weight:600;font-size:.8rem;color:#4a5278; }
+.param-table td { vertical-align:middle; }
+.req  { background:#fce8e8;color:#c62828;font-size:.71rem;padding:2px 7px;border-radius:4px;font-weight:600; }
+.opt  { background:#eef2ff;color:#4f6ef7;font-size:.71rem;padding:2px 7px;border-radius:4px;font-weight:600; }
+
+/* ROLE BADGES */
+.role { padding:3px 9px;border-radius:5px;font-size:.74rem;font-weight:700; }
+.role-all     { background:#e8f5e9;color:#2e7d32; }
+.role-geselle { background:#e3f2fd;color:#1565c0; }
+.role-meister { background:#fff8e1;color:#f57f17; }
+.role-admin   { background:#fce8e8;color:#c62828; }
+
+/* STATUS CODES */
+.sc { display:inline-block;padding:2px 8px;border-radius:5px;font-size:.78rem;font-weight:700;font-family:monospace; }
+.sc-2xx { background:#e8f5e9;color:#2e7d32; }
+.sc-4xx { background:#fce8e8;color:#c62828; }
+.sc-5xx { background:#fff3e0;color:#e65100; }
+
+/* INSTALL STEPS */
+.step { display:flex;gap:16px;margin-bottom:20px; }
+.step-num { width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;display:grid;place-items:center;flex-shrink:0;font-size:.9rem; }
+.step-body h6 { font-weight:700;margin-bottom:4px; }
+
+/* TABS */
+.nav-tabs .nav-link { font-size:.83rem;color:#6b7598; }
+.nav-tabs .nav-link.active { color:var(--accent);font-weight:600; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="brand">
+    <div class="d-flex align-items-center gap-2">
+      <div style="background:var(--accent);border-radius:10px;width:36px;height:36px;display:grid;place-items:center">
+        <i class="bi bi-braces text-white"></i>
+      </div>
+      <div>
+        <h5>HandwerkerPro</h5>
+        <small>REST-API Dokumentation v1.0</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Einführung</div>
+  <a href="#uebersicht"     class="nav-link"><i class="bi bi-house"></i> Übersicht</a>
+  <a href="#installation"   class="nav-link"><i class="bi bi-gear"></i> Installation</a>
+  <a href="#auth-konzept"   class="nav-link"><i class="bi bi-shield-lock"></i> Authentifizierung</a>
+  <a href="#fehler"         class="nav-link"><i class="bi bi-exclamation-triangle"></i> Fehlerbehandlung</a>
+  <a href="#sicherheit"     class="nav-link"><i class="bi bi-lock"></i> Sicherheit</a>
+
+  <div class="section-title">Endpoints</div>
+  <a href="#ep-auth"        class="nav-link"><i class="bi bi-key"></i> Auth</a>
+  <a href="#ep-dashboard"   class="nav-link"><i class="bi bi-speedometer2"></i> Dashboard</a>
+  <a href="#ep-kunden"      class="nav-link"><i class="bi bi-people"></i> Kunden</a>
+  <a href="#ep-auftraege"   class="nav-link"><i class="bi bi-clipboard-check"></i> Aufträge</a>
+  <a href="#ep-rechnungen"  class="nav-link"><i class="bi bi-receipt"></i> Rechnungen</a>
+  <a href="#ep-material"    class="nav-link"><i class="bi bi-boxes"></i> Material</a>
+
+  <div class="section-title">Test</div>
+  <a href="testclient.html" class="nav-link"><i class="bi bi-play-circle"></i> Test-Client öffnen</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+<!-- ═══════════ HERO ═══════════ -->
+<div class="hero">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+    <div>
+      <h2>HandwerkerPro REST-API</h2>
+      <p class="mb-0 opacity-75">Sprint 5 · Slim Framework 4 · PHP 8.1+ · MariaDB</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+      <span class="badge bg-success fs-6 px-3 py-2">v1.0</span>
+      <span class="badge bg-primary fs-6 px-3 py-2">Slim 4</span>
+      <span class="badge bg-secondary fs-6 px-3 py-2">REST · JSON</span>
+    </div>
+  </div>
+  <div class="mt-3 d-flex flex-wrap gap-4" style="font-size:.85rem;">
+    <span><i class="bi bi-check-circle-fill text-success me-1"></i>6 Ressourcen · 22 Endpoints</span>
+    <span><i class="bi bi-check-circle-fill text-success me-1"></i>API-Key + Session Auth</span>
+    <span><i class="bi bi-check-circle-fill text-success me-1"></i>Rollensystem (4 Stufen)</span>
+    <span><i class="bi bi-check-circle-fill text-success me-1"></i>PDO Prepared Statements</span>
+    <span><i class="bi bi-check-circle-fill text-success me-1"></i>Argon2ID Passwort-Hashing</span>
+    <span><i class="bi bi-check-circle-fill text-success me-1"></i>CORS-Header</span>
+  </div>
+</div>
+
+<!-- ═══════════ ÜBERSICHT ═══════════ -->
+<div id="uebersicht" class="section-anchor mb-5">
+  <h4 class="fw-bold mb-3">Übersicht</h4>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-6">
+      <div class="doc-card h-100">
+        <div class="card-body">
+          <h6 class="fw-bold"><i class="bi bi-link-45deg me-2 text-primary"></i>Basis-URL</h6>
+          <div class="code"><pre>http://localhost/api</pre></div>
+          <p class="mt-3 mb-1" style="font-size:.875rem;">Alle Antworten im JSON-Format:</p>
+          <div class="code"><pre>Content-Type: application/json; charset=UTF-8</pre></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="doc-card h-100">
+        <div class="card-body">
+          <h6 class="fw-bold"><i class="bi bi-stack me-2 text-primary"></i>Technologie-Stack</h6>
+          <table class="table table-sm mb-0" style="font-size:.84rem;">
+            <tr><td class="text-muted">Framework</td><td><strong>Slim Framework 4</strong></td></tr>
+            <tr><td class="text-muted">Sprache</td><td><strong>PHP 8.1+</strong></td></tr>
+            <tr><td class="text-muted">Datenbank</td><td><strong>MariaDB 10.4+</strong></td></tr>
+            <tr><td class="text-muted">DB-Zugriff</td><td><strong>PDO (Prepared Statements)</strong></td></tr>
+            <tr><td class="text-muted">Passwort</td><td><strong>Argon2ID / bcrypt</strong></td></tr>
+            <tr><td class="text-muted">Webserver</td><td><strong>Apache + mod_rewrite</strong></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-body">
+      <h6 class="fw-bold mb-3"><i class="bi bi-diagram-3 me-2 text-primary"></i>Antwort-Struktur</h6>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <p class="mb-1" style="font-size:.84rem;">✅ Erfolgreiche Antwort:</p>
+          <div class="code"><pre>{
+  <span class="ck">"status"</span>:  <span class="cv">"success"</span>,
+  <span class="ck">"message"</span>: <span class="cv">"Beschreibung"</span>,  <span class="cc">// optional</span>
+  <span class="ck">"data"</span>:    { ... }          <span class="cc">// Nutzlast</span>
+}</pre></div>
+        </div>
+        <div class="col-md-6">
+          <p class="mb-1" style="font-size:.84rem;">❌ Fehler-Antwort:</p>
+          <div class="code"><pre>{
+  <span class="ck">"status"</span>:  <span class="cv">"error"</span>,
+  <span class="ck">"message"</span>: <span class="cv">"Fehlerbeschreibung"</span>,
+  <span class="ck">"details"</span>: { ... }  <span class="cc">// optional</span>
+}</pre></div>
+        </div>
+      </div>
+
+      <h6 class="fw-bold mt-4 mb-2"><i class="bi bi-hash me-2 text-primary"></i>HTTP-Statuscodes</h6>
+      <div class="row g-2" style="font-size:.84rem;">
+        <div class="col-md-4">
+          <span class="sc sc-2xx">200</span> OK — Erfolgreich<br>
+          <span class="sc sc-2xx">201</span> Created — Ressource erstellt
+        </div>
+        <div class="col-md-4">
+          <span class="sc sc-4xx">400</span> Bad Request — Fehlerhafte Eingabe<br>
+          <span class="sc sc-4xx">401</span> Unauthorized — Nicht angemeldet<br>
+          <span class="sc sc-4xx">403</span> Forbidden — Keine Berechtigung<br>
+          <span class="sc sc-4xx">404</span> Not Found — Nicht gefunden<br>
+          <span class="sc sc-4xx">409</span> Conflict — Konflikt (z.B. Trigger)<br>
+          <span class="sc sc-4xx">422</span> Unprocessable — Validierungsfehler
+        </div>
+        <div class="col-md-4">
+          <span class="sc sc-5xx">500</span> Internal Server Error<br>
+          <span class="sc sc-5xx">503</span> Service Unavailable (DB-Fehler)
+        </div>
+      </div>
+
+      <h6 class="fw-bold mt-4 mb-2"><i class="bi bi-filter me-2 text-primary"></i>Pagination</h6>
+      <p style="font-size:.84rem;" class="mb-1">Alle Listen-Endpunkte unterstützen Pagination:</p>
+      <div class="code"><pre>GET /api/kunden?page=2&limit=10
+
+<span class="cc">// Antwort enthält immer:</span>
+{
+  <span class="ck">"total"</span>: <span class="cn">42</span>,   <span class="cc">// Gesamtanzahl</span>
+  <span class="ck">"page"</span>:  <span class="cn">2</span>,   <span class="cc">// Aktuelle Seite</span>
+  <span class="ck">"limit"</span>: <span class="cn">10</span>,  <span class="cc">// Ergebnisse pro Seite (max. 100)</span>
+  <span class="ck">"pages"</span>: <span class="cn">5</span>    <span class="cc">// Gesamtanzahl Seiten</span>
+}</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ INSTALLATION ═══════════ -->
+<div id="installation" class="section-anchor mb-5">
+  <h4 class="fw-bold mb-3">Installation</h4>
+
+  <div class="doc-card">
+    <div class="card-body">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h6>Voraussetzungen prüfen</h6>
+          <p style="font-size:.875rem;" class="mb-2">Folgende Software muss installiert sein:</p>
+          <ul style="font-size:.875rem;">
+            <li>PHP 8.1 oder höher</li>
+            <li>XAMPP (Apache + MariaDB) oder anderer Webserver</li>
+            <li>Composer (PHP Paketmanager)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h6>Projekt-Dateien platzieren</h6>
+          <p style="font-size:.875rem;" class="mb-2">Den <code>slim-api</code> Ordner nach <code>C:\xampp\htdocs\</code> kopieren:</p>
+          <div class="code"><pre>C:\xampp\htdocs\
+└── slim-api\
+    ├── composer.json
+    ├── config\
+    ├── public\        ← Apache DocumentRoot
+    └── src\</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h6>Abhängigkeiten installieren</h6>
+          <p style="font-size:.875rem;" class="mb-2">Terminal im <code>slim-api</code> Ordner öffnen:</p>
+          <div class="code"><pre>cd C:\xampp\htdocs\slim-api
+composer install</pre></div>
+          <p style="font-size:.875rem;" class="mt-2 mb-0">Dies erstellt den <code>vendor/</code> Ordner mit Slim Framework und allen Abhängigkeiten.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h6>Datenbank konfigurieren</h6>
+          <p style="font-size:.875rem;" class="mb-2">SQL-Dump einspielen:</p>
+          <div class="code"><pre>mysql -u root -p handwerkerpro_db &lt; handwerkerpro_db.sql</pre></div>
+          <p style="font-size:.875rem;" class="mt-2 mb-2">Dann in <code>config/database.php</code> die Zugangsdaten anpassen:</p>
+          <div class="code"><pre>return [
+    <span class="ck">'host'</span> => <span class="cv">'localhost'</span>,
+    <span class="ck">'name'</span> => <span class="cv">'handwerkerpro_db'</span>,
+    <span class="ck">'user'</span> => <span class="cv">'root'</span>,
+    <span class="ck">'pass'</span> => <span class="cv">''</span>,  <span class="cc">// Dein Passwort</span>
+];</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h6>Apache konfigurieren</h6>
+          <p style="font-size:.875rem;" class="mb-2">In <code>C:\xampp\apache\conf\extra\httpd-vhosts.conf</code> eintragen:</p>
+          <div class="code"><pre>&lt;VirtualHost *:80&gt;
+    DocumentRoot "C:/xampp/htdocs/slim-api/public"
+    ServerName localhost
+    &lt;Directory "C:/xampp/htdocs/slim-api/public"&gt;
+        AllowOverride All
+        Require all granted
+    &lt;/Directory&gt;
+&lt;/VirtualHost&gt;</pre></div>
+          <p style="font-size:.875rem;" class="mt-2 mb-2">In <code>C:\xampp\apache\conf\httpd.conf</code> sicherstellen dass diese Zeile aktiv ist:</p>
+          <div class="code"><pre>LoadModule rewrite_module modules/mod_rewrite.so</pre></div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <h6>Apache neu starten & testen</h6>
+          <p style="font-size:.875rem;" class="mb-2">XAMPP Control Panel → Apache → Restart</p>
+          <p style="font-size:.875rem;" class="mb-2">Im Browser öffnen:</p>
+          <div class="code"><pre>http://localhost/api</pre></div>
+          <p style="font-size:.875rem;" class="mt-2 mb-0">Wenn eine JSON-Antwort mit allen Endpoints erscheint, ist die Installation erfolgreich.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">7</div>
+        <div class="step-body">
+          <h6>Test-Client öffnen</h6>
+          <div class="code"><pre>http://localhost/docs/testclient.html</pre></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ AUTHENTIFIZIERUNG ═══════════ -->
+<div id="auth-konzept" class="section-anchor mb-5">
+  <h4 class="fw-bold mb-3">Authentifizierung</h4>
+
+  <div class="doc-card mb-3">
+    <div class="card-body">
+      <p style="font-size:.875rem;">Die API unterstützt zwei Methoden. <strong>Methode 1 (API-Key)</strong> wird für alle Anfragen empfohlen.</p>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="p-3 rounded-3" style="background:#f0f4ff;border:1px solid #c7d3ff;">
+            <h6 class="fw-bold"><i class="bi bi-key me-2 text-primary"></i>Methode 1: API-Key Header</h6>
+            <div class="code mt-2"><pre>X-API-Key: admin-key-12345
+
+<span class="cc">// Alternativ:</span>
+Authorization: Bearer admin-key-12345</pre></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="p-3 rounded-3" style="background:#f0fff4;border:1px solid #b7e4c7;">
+            <h6 class="fw-bold"><i class="bi bi-person-check me-2 text-success"></i>Methode 2: Session-Login</h6>
+            <div class="code mt-2"><pre>POST /api/auth/login
+{
+  <span class="ck">"email"</span>:    <span class="cv">"<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d9bcb4b8b0b599bca1b8b4a9b5bcf7bab6b4">[email&#160;protected]</a>"</span>,
+  <span class="ck">"password"</span>: <span class="cv">"passwort"</span>
+}</pre></div>
+          </div>
+        </div>
+      </div>
+
+      <h6 class="fw-bold mt-4 mb-2">Demo API-Keys</h6>
+      <table class="table table-sm param-table mb-0">
+        <thead><tr><th>API-Key</th><th>Mitarbeiter</th><th>Rolle</th><th>Berechtigungen</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>admin-key-12345</code></td>
+            <td>Max Mustermann</td>
+            <td><span class="role role-admin">admin</span></td>
+            <td>Vollzugriff</td>
+          </tr>
+          <tr>
+            <td><code>meister-key-67890</code></td>
+            <td>Lena Zimmer</td>
+            <td><span class="role role-meister">meister</span></td>
+            <td>Lesen, Erstellen, Bearbeiten, Löschen (außer Material löschen)</td>
+          </tr>
+          <tr>
+            <td><code>geselle-key-11111</code></td>
+            <td>Klaus Bauer</td>
+            <td><span class="role role-geselle">geselle</span></td>
+            <td>Lesen, Erstellen, Bearbeiten</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h6 class="fw-bold mt-4 mb-2">Rollenhierarchie</h6>
+      <div class="code"><pre><span class="cc">// Zugriffslevel (höher = mehr Rechte)</span>
+admin (5) > meister (4) > geselle (3) > azubi (2) > buero (1)
+
+<span class="cc">// Wer darf was:</span>
+<span class="cv">GET</span>    (alle Rollen)  → Daten lesen
+<span class="cv">POST</span>   (geselle+)    → Neue Einträge erstellen
+<span class="cv">PUT</span>    (geselle+)    → Einträge bearbeiten
+<span class="cv">DELETE</span> (meister+)   → Kunden/Aufträge löschen
+<span class="cv">DELETE</span> (admin)      → Material löschen</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ FEHLERBEHANDLUNG ═══════════ -->
+<div id="fehler" class="section-anchor mb-5">
+  <h4 class="fw-bold mb-3">Fehlerbehandlung & Validierung</h4>
+  <div class="doc-card">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <h6 class="fw-bold">Validierungsregeln</h6>
+          <ul style="font-size:.875rem;">
+            <li>Pflichtfelder werden geprüft → <code>422</code></li>
+            <li>ENUM-Werte gegen Whitelist geprüft → <code>422</code></li>
+            <li>Datumsformat <code>YYYY-MM-DD</code> → <code>422</code></li>
+            <li>Numerische Werte auf Positivität → <code>422</code></li>
+            <li>E-Mail via <code>filter_var()</code> → <code>422</code></li>
+            <li>Ressource nicht gefunden → <code>404</code></li>
+            <li>DB-Trigger-Fehler (z.B. offene Aufträge) → <code>409</code></li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <h6 class="fw-bold">Beispiel 422-Antwort</h6>
+          <div class="code"><pre>{
+  <span class="ck">"status"</span>:  <span class="cv">"error"</span>,
+  <span class="ck">"message"</span>: <span class="cv">"Pflichtfelder fehlen."</span>,
+  <span class="ck">"details"</span>: {
+    <span class="ck">"fehlende_felder"</span>: [
+      <span class="cv">"vorname"</span>,
+      <span class="cv">"nachname"</span>
+    ]
+  }
+}</pre></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SICHERHEIT ═══════════ -->
+<div id="sicherheit" class="section-anchor mb-5">
+  <h4 class="fw-bold mb-3">Sicherheit</h4>
+  <div class="doc-card">
+    <div class="card-body">
+      <div class="row g-4">
+        <div class="col-md-3 text-center">
+          <i class="bi bi-shield-check" style="font-size:2rem;color:var(--accent)"></i>
+          <h6 class="fw-bold mt-2">Prepared Statements</h6>
+          <p style="font-size:.82rem;" class="text-muted">Alle DB-Abfragen über PDO Prepared Statements. String-Concatenation für SQL ist vollständig verboten.</p>
+        </div>
+        <div class="col-md-3 text-center">
+          <i class="bi bi-hash" style="font-size:2rem;color:var(--accent)"></i>
+          <h6 class="fw-bold mt-2">Passwort-Hashing</h6>
+          <p style="font-size:.82rem;" class="text-muted">Argon2ID (Standard) oder bcrypt via <code>password_hash()</code>. Passwörter werden niemals im Klartext gespeichert.</p>
+        </div>
+        <div class="col-md-3 text-center">
+          <i class="bi bi-funnel" style="font-size:2rem;color:var(--accent)"></i>
+          <h6 class="fw-bold mt-2">Input-Sanitizing</h6>
+          <p style="font-size:.82rem;" class="text-muted">Alle Eingaben werden via <code>strip_tags()</code> und <code>trim()</code> bereinigt (XSS-Schutz).</p>
+        </div>
+        <div class="col-md-3 text-center">
+          <i class="bi bi-globe" style="font-size:2rem;color:var(--accent)"></i>
+          <h6 class="fw-bold mt-2">CORS-Header</h6>
+          <p style="font-size:.82rem;" class="text-muted">CorsMiddleware setzt alle notwendigen Header. In Produktion sollte <code>Allow-Origin</code> eingeschränkt werden.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ENDPOINTS
+═══════════════════════════════════════ -->
+
+<!-- AUTH -->
+<div id="ep-auth" class="section-anchor mb-5">
+  <h4 class="fw-bold mb-3"><i class="bi bi-key me-2 text-primary"></i>Auth Endpoints</h4>
+
+  <!-- POST Login -->
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-POST">POST</span>
+      <span class="url">/api/auth/login</span>
+      <span class="ms-auto badge bg-success-subtle text-success">Öffentlich</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Meldet einen Mitarbeiter an und startet eine Session.</p>
+      <h6>Request Body</h6>
+      <table class="table table-sm param-table mb-3">
+        <thead><tr><th>Feld</th><th>Typ</th><th>Pflicht</th><th>Beschreibung</th></tr></thead>
+        <tbody>
+          <tr><td><code>email</code></td><td>string</td><td><span class="req">Pflicht</span></td><td>E-Mail-Adresse des Mitarbeiters</td></tr>
+          <tr><td><code>password</code></td><td>string</td><td><span class="req">Pflicht</span></td><td>Passwort (Demo: <code>demo123</code>)</td></tr>
+        </tbody>
+      </table>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <h6>Beispiel-Aufruf</h6>
+          <div class="code"><pre>curl -X POST http://localhost/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    <span class="ck">"email"</span>:    <span class="cv">"<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2d400340585e59485f404c43436d454c43495a485f46485f034948">[email&#160;protected]</a>"</span>,
+    <span class="ck">"password"</span>: <span class="cv">"demo123"</span>
+  }'</pre></div>
+        </div>
+        <div class="col-md-6">
+          <h6>Antwort <span class="sc sc-2xx">200</span></h6>
+          <div class="code"><pre>{
+  <span class="ck">"status"</span>:  <span class="cv">"success"</span>,
+  <span class="ck">"message"</span>: <span class="cv">"Login erfolgreich."</span>,
+  <span class="ck">"data"</span>: {
+    <span class="ck">"mitarbeiter_id"</span>: <span class="cn">1</span>,
+    <span class="ck">"vorname"</span>: <span class="cv">"Max"</span>,
+    <span class="ck">"rolle"</span>:   <span class="cv">"admin"</span>,
+    <span class="ck">"session_aktiv"</span>: <span class="cb">true</span>
+  }
+}</pre></div>
+        </div>
+      </div>
+      <div class="mt-2"><small class="text-muted">Fehler: <span class="sc sc-4xx">401</span> falsches Passwort · <span class="sc sc-4xx">422</span> E-Mail/Passwort fehlt</small></div>
+    </div>
+  </div>
+
+  <!-- GET me -->
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-GET">GET</span>
+      <span class="url">/api/auth/me</span>
+      <span class="ms-auto role role-all">alle Rollen</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Gibt Informationen über den aktuell authentifizierten Benutzer zurück.</p>
+      <div class="code"><pre>curl http://localhost/api/auth/me \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <!-- POST logout -->
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-POST">POST</span>
+      <span class="url">/api/auth/logout</span>
+      <span class="ms-auto role role-all">alle Rollen</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Beendet die aktuelle Session.</p>
+      <div class="code"><pre>curl -X POST http://localhost/api/auth/logout \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="ep-dashboard" class="section-anchor mb-5">
+  <h4 class="fw-bold mb-3"><i class="bi bi-speedometer2 me-2 text-primary"></i>Dashboard</h4>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-GET">GET</span>
+      <span class="url">/api/dashboard</span>
+      <span class="ms-auto role role-all">alle Rollen</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Vollständige Dashboard-Übersicht mit KPIs, heutigen Terminen, Notfall-Aufträgen und kritischen Lagerbeständen.</p>
+      <h6>Beispiel-Aufruf</h6>
+      <div class="code mb-3"><pre>curl http://localhost/api/dashboard \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+      <h6>Enthaltene Daten</h6>
+      <ul style="font-size:.875rem;">
+        <li><code>kpis</code> — Kunden gesamt, offene Aufträge, überfällige Rechnungen, offener Betrag, kritische Lagerbestände</li>
+        <li><code>auftraege_statistik</code> — Anzahl pro Status</li>
+        <li><code>rechnungen_statistik</code> — Anzahl pro Status + offener Betrag</li>
+        <li><code>termine_heute</code> — Alle Termine des heutigen Tages</li>
+        <li><code>notfall_auftraege</code> — Offene Notfall/Dringend Aufträge</li>
+        <li><code>lager_kritisch</code> — Materialien mit Bestand &lt; 5</li>
+        <li><code>wartende_kunden</code> — Kunden mit Status "neu" (Top 5)</li>
+        <li><code>mitarbeiter_auslastung</code> — Geplante Stunden diese Woche</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- KUNDEN -->
+<div id="ep-kunden" class="section-anchor mb-5">
+  <h4 class="fw-bold mb-3"><i class="bi bi-people me-2 text-primary"></i>Kunden</h4>
+
+  <!-- GET Liste -->
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-GET">GET</span>
+      <span class="url">/api/kunden</span>
+      <span class="ms-auto role role-all">alle Rollen</span>
+    </div>
+    <div class="card-body">
+      <h6>Query-Parameter</h6>
+      <table class="table table-sm param-table mb-3">
+        <thead><tr><th>Parameter</th><th>Typ</th><th></th><th>Beschreibung</th><th>Beispiel</th></tr></thead>
+        <tbody>
+          <tr><td><code>page</code></td><td>int</td><td><span class="opt">Optional</span></td><td>Seitennummer (Standard: 1)</td><td><code>?page=2</code></td></tr>
+          <tr><td><code>limit</code></td><td>int</td><td><span class="opt">Optional</span></td><td>Ergebnisse pro Seite, max. 100 (Standard: 25)</td><td><code>?limit=10</code></td></tr>
+          <tr><td><code>typ</code></td><td>string</td><td><span class="opt">Optional</span></td><td><code>privat</code> oder <code>firma</code></td><td><code>?typ=firma</code></td></tr>
+          <tr><td><code>stammkunde</code></td><td>bool</td><td><span class="opt">Optional</span></td><td><code>true</code> oder <code>false</code></td><td><code>?stammkunde=true</code></td></tr>
+          <tr><td><code>search</code></td><td>string</td><td><span class="opt">Optional</span></td><td>Suche in Name / Firmenname</td><td><code>?search=Müller</code></td></tr>
+        </tbody>
+      </table>
+      <div class="code"><pre>curl "http://localhost/api/kunden?typ=firma&stammkunde=true&limit=5" \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <!-- GET Detail -->
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-GET">GET</span>
+      <span class="url">/api/kunden/{id}</span>
+      <span class="ms-auto role role-all">alle Rollen</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Vollständiger Kundendatensatz inkl. Kontakte, Adressen und Personen/Firmen-Details.</p>
+      <div class="code"><pre>curl http://localhost/api/kunden/1 \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <!-- GET Aufträge -->
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-GET">GET</span>
+      <span class="url">/api/kunden/{id}/auftraege</span>
+      <span class="ms-auto role role-all">alle Rollen</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Alle Aufträge eines bestimmten Kunden.</p>
+      <div class="code"><pre>curl http://localhost/api/kunden/1/auftraege \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <!-- POST -->
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-POST">POST</span>
+      <span class="url">/api/kunden</span>
+      <span class="ms-auto role role-geselle">geselle+</span>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <h6>Privatkunde anlegen</h6>
+          <table class="table table-sm param-table mb-2">
+            <thead><tr><th>Feld</th><th>Typ</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><code>typ</code></td><td>string</td><td><span class="req">Pflicht</span> <code>"privat"</code></td></tr>
+              <tr><td><code>vorname</code></td><td>string</td><td><span class="req">Pflicht</span></td></tr>
+              <tr><td><code>nachname</code></td><td>string</td><td><span class="req">Pflicht</span></td></tr>
+              <tr><td><code>ist_stammkunde</code></td><td>bool</td><td><span class="opt">Optional</span></td></tr>
+              <tr><td><code>notizen</code></td><td>string</td><td><span class="opt">Optional</span></td></tr>
+              <tr><td><code>kontakt_typ</code></td><td>string</td><td><span class="opt">Optional</span></td></tr>
+              <tr><td><code>kontakt_wert</code></td><td>string</td><td><span class="opt">Optional</span></td></tr>
+            </tbody>
+          </table>
+          <div class="code"><pre>curl -X POST http://localhost/api/kunden \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span> \
+  -H <span class="cv">"Content-Type: application/json"</span> \
+  -d '{
+    <span class="ck">"typ"</span>:          <span class="cv">"privat"</span>,
+    <span class="ck">"vorname"</span>:      <span class="cv">"Hans"</span>,
+    <span class="ck">"nachname"</span>:     <span class="cv">"Maier"</span>,
+    <span class="ck">"kontakt_typ"</span>:  <span class="cv">"Mobil"</span>,
+    <span class="ck">"kontakt_wert"</span>: <span class="cv">"0170-1234567"</span>
+  }'</pre></div>
+        </div>
+        <div class="col-md-6">
+          <h6>Firmenkunde anlegen</h6>
+          <table class="table table-sm param-table mb-2">
+            <thead><tr><th>Feld</th><th>Typ</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><code>typ</code></td><td>string</td><td><span class="req">Pflicht</span> <code>"firma"</code></td></tr>
+              <tr><td><code>firmenname</code></td><td>string</td><td><span class="req">Pflicht</span></td></tr>
+              <tr><td><code>ansprechpartner</code></td><td>string</td><td><span class="opt">Optional</span></td></tr>
+              <tr><td><code>ust_id</code></td><td>string</td><td><span class="opt">Optional</span></td></tr>
+            </tbody>
+          </table>
+          <div class="code"><pre>curl -X POST http://localhost/api/kunden \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span> \
+  -H <span class="cv">"Content-Type: application/json"</span> \
+  -d '{
+    <span class="ck">"typ"</span>:              <span class="cv">"firma"</span>,
+    <span class="ck">"firmenname"</span>:      <span class="cv">"Muster GmbH"</span>,
+    <span class="ck">"ansprechpartner"</span>: <span class="cv">"Herr Koch"</span>,
+    <span class="ck">"ust_id"</span>:          <span class="cv">"DE123456789"</span>
+  }'</pre></div>
+        </div>
+      </div>
+      <div class="mt-2"><small class="text-muted">Erlaubte kontakt_typ Werte: <code>Telefon</code> · <code>Email</code> · <code>Mobil</code> · <code>Whatsapp Business</code></small></div>
+    </div>
+  </div>
+
+  <!-- PUT -->
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-PUT">PUT</span>
+      <span class="url">/api/kunden/{id}</span>
+      <span class="ms-auto role role-geselle">geselle+</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Felder aktualisieren. Nur gesendete Felder werden geändert.</p>
+      <div class="code"><pre>curl -X PUT http://localhost/api/kunden/1 \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span> \
+  -H <span class="cv">"Content-Type: application/json"</span> \
+  -d '{ <span class="ck">"ist_stammkunde"</span>: <span class="cb">true</span>, <span class="ck">"notizen"</span>: <span class="cv">"VIP-Kunde"</span> }'</pre></div>
+    </div>
+  </div>
+
+  <!-- DELETE -->
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-DELETE">DELETE</span>
+      <span class="url">/api/kunden/{id}</span>
+      <span class="ms-auto role role-meister">meister+</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Löscht einen Kunden. DB-Trigger <code>tr_kunden_loeschschutz</code> verhindert das Löschen bei offenen Aufträgen → <span class="sc sc-4xx">409</span>.</p>
+      <div class="code"><pre>curl -X DELETE http://localhost/api/kunden/5 \
+  -H <span class="cv">"X-API-Key: meister-key-67890"</span></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- AUFTRÄGE -->
+<div id="ep-auftraege" class="section-anchor mb-5">
+  <h4 class="fw-bold mb-3"><i class="bi bi-clipboard-check me-2 text-primary"></i>Aufträge</h4>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-GET">GET</span>
+      <span class="url">/api/auftraege</span>
+      <span class="ms-auto role role-all">alle Rollen</span>
+    </div>
+    <div class="card-body">
+      <table class="table table-sm param-table mb-3">
+        <thead><tr><th>Parameter</th><th>Typ</th><th></th><th>Beschreibung</th></tr></thead>
+        <tbody>
+          <tr><td><code>status</code></td><td>string</td><td><span class="opt">Optional</span></td><td>Kommagetrennt: <code>neu,aktiv,geplant,abgeschlossen,abgerechnet,storniert</code></td></tr>
+          <tr><td><code>prioritaet</code></td><td>string</td><td><span class="opt">Optional</span></td><td><code>niedrig</code> · <code>normal</code> · <code>dringend</code> · <code>notfall</code></td></tr>
+          <tr><td><code>kunden_id</code></td><td>int</td><td><span class="opt">Optional</span></td><td>Nur Aufträge eines Kunden</td></tr>
+          <tr><td><code>datum_von</code></td><td>date</td><td><span class="opt">Optional</span></td><td>Von-Datum (YYYY-MM-DD)</td></tr>
+          <tr><td><code>datum_bis</code></td><td>date</td><td><span class="opt">Optional</span></td><td>Bis-Datum (YYYY-MM-DD)</td></tr>
+          <tr><td><code>search</code></td><td>string</td><td><span class="opt">Optional</span></td><td>Suche im Titel</td></tr>
+          <tr><td><code>sort</code></td><td>string</td><td><span class="opt">Optional</span></td><td><code>erstellt_am</code> · <code>prioritaet</code> · <code>status</code> · <code>auftrag_nr</code></td></tr>
+          <tr><td><code>dir</code></td><td>string</td><td><span class="opt">Optional</span></td><td><code>ASC</code> oder <code>DESC</code> (Standard: DESC)</td></tr>
+        </tbody>
+      </table>
+      <div class="code"><pre>curl "http://localhost/api/auftraege?status=neu,aktiv&prioritaet=notfall" \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-GET">GET</span>
+      <span class="url">/api/auftraege/{id}</span>
+      <span class="ms-auto role role-all">alle Rollen</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Vollständiger Auftrag inkl. Positionen, Materialien, Termine und berechneter Netto/Brutto-Summe.</p>
+      <div class="code"><pre>curl http://localhost/api/auftraege/1 \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-POST">POST</span>
+      <span class="url">/api/auftraege</span>
+      <span class="ms-auto role role-geselle">geselle+</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Legt neuen Auftrag an via Stored Procedure <code>sp_neuer_auftrag</code>. Auftragsnummer wird automatisch via Trigger generiert.</p>
+      <table class="table table-sm param-table mb-3">
+        <thead><tr><th>Feld</th><th>Typ</th><th></th><th>Beschreibung</th></tr></thead>
+        <tbody>
+          <tr><td><code>kunden_id</code></td><td>int</td><td><span class="req">Pflicht</span></td><td>ID des Kunden</td></tr>
+          <tr><td><code>titel</code></td><td>string</td><td><span class="req">Pflicht</span></td><td>Min. 3, max. 150 Zeichen</td></tr>
+          <tr><td><code>prioritaet</code></td><td>string</td><td><span class="opt">Optional</span></td><td>Standard: <code>normal</code></td></tr>
+          <tr><td><code>beschreibung</code></td><td>string</td><td><span class="opt">Optional</span></td><td>Detailbeschreibung</td></tr>
+        </tbody>
+      </table>
+      <div class="code"><pre>curl -X POST http://localhost/api/auftraege \
+  -H <span class="cv">"X-API-Key: geselle-key-11111"</span> \
+  -H <span class="cv">"Content-Type: application/json"</span> \
+  -d '{
+    <span class="ck">"kunden_id"</span>:   <span class="cn">1</span>,
+    <span class="ck">"titel"</span>:       <span class="cv">"Heizungsreparatur Keller"</span>,
+    <span class="ck">"prioritaet"</span>:  <span class="cv">"dringend"</span>,
+    <span class="ck">"beschreibung"</span>:<span class="cv">"Heizung ausgefallen seit gestern"</span>
+  }'</pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-PUT">PUT</span>
+      <span class="url">/api/auftraege/{id}/status</span>
+      <span class="ms-auto role role-geselle">geselle+</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Status ändern. Spezialverhalten:</p>
+      <ul style="font-size:.875rem;">
+        <li><code>abgeschlossen</code> → ruft <code>sp_auftrag_abschliessen</code> auf → Rechnung wird automatisch erstellt</li>
+        <li><code>storniert</code> → ruft <code>sp_auftrag_stornieren</code> auf → Materialien werden ins Lager zurückgebucht</li>
+      </ul>
+      <div class="code"><pre>curl -X PUT http://localhost/api/auftraege/3/status \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span> \
+  -H <span class="cv">"Content-Type: application/json"</span> \
+  -d '{ <span class="ck">"status"</span>: <span class="cv">"abgeschlossen"</span> }'</pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-DELETE">DELETE</span>
+      <span class="url">/api/auftraege/{id}</span>
+      <span class="ms-auto role role-meister">meister+</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Löscht Auftrag. Bereits abgerechnete Aufträge können nicht gelöscht werden → <span class="sc sc-4xx">409</span>.</p>
+      <div class="code"><pre>curl -X DELETE http://localhost/api/auftraege/15 \
+  -H <span class="cv">"X-API-Key: meister-key-67890"</span></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- RECHNUNGEN -->
+<div id="ep-rechnungen" class="section-anchor mb-5">
+  <h4 class="fw-bold mb-3"><i class="bi bi-receipt me-2 text-primary"></i>Rechnungen</h4>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-GET">GET</span>
+      <span class="url">/api/rechnungen</span>
+      <span class="ms-auto role role-all">alle Rollen</span>
+    </div>
+    <div class="card-body">
+      <table class="table table-sm param-table mb-3">
+        <thead><tr><th>Parameter</th><th>Typ</th><th></th><th>Beschreibung</th></tr></thead>
+        <tbody>
+          <tr><td><code>status</code></td><td>string</td><td><span class="opt">Optional</span></td><td><code>entwurf</code> · <code>gesendet</code> · <code>bezahlt</code> · <code>überfällig</code></td></tr>
+          <tr><td><code>kunden_id</code></td><td>int</td><td><span class="opt">Optional</span></td><td>Nur Rechnungen eines Kunden</td></tr>
+          <tr><td><code>ueberfaellig</code></td><td>bool</td><td><span class="opt">Optional</span></td><td><code>true</code> → nur überfällige Rechnungen</td></tr>
+          <tr><td><code>datum_von</code></td><td>date</td><td><span class="opt">Optional</span></td><td>Von-Datum (YYYY-MM-DD)</td></tr>
+          <tr><td><code>datum_bis</code></td><td>date</td><td><span class="opt">Optional</span></td><td>Bis-Datum (YYYY-MM-DD)</td></tr>
+        </tbody>
+      </table>
+      <div class="code"><pre>curl "http://localhost/api/rechnungen?ueberfaellig=true" \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-GET">GET</span>
+      <span class="url">/api/rechnungen/{id}</span>
+      <span class="ms-auto role role-all">alle Rollen</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Einzelne Rechnung mit allen Positionen, Brutto/Netto-Betrag und Verzugstagen.</p>
+      <div class="code"><pre>curl http://localhost/api/rechnungen/2 \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-POST">POST</span>
+      <span class="url">/api/rechnungen/{id}/bezahlen</span>
+      <span class="ms-auto role role-all">alle Rollen</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Markiert eine Rechnung als bezahlt via <code>sp_rechnung_bezahlen</code>. Bereits bezahlte Rechnung → <span class="sc sc-4xx">409</span>.</p>
+      <div class="code"><pre>curl -X POST http://localhost/api/rechnungen/2/bezahlen \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-PUT">PUT</span>
+      <span class="url">/api/rechnungen/{id}</span>
+      <span class="ms-auto role role-geselle">geselle+</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Status oder Fälligkeitsdatum aktualisieren.</p>
+      <div class="code"><pre>curl -X PUT http://localhost/api/rechnungen/2 \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span> \
+  -H <span class="cv">"Content-Type: application/json"</span> \
+  -d '{ <span class="ck">"status"</span>: <span class="cv">"gesendet"</span>, <span class="ck">"faellig_am"</span>: <span class="cv">"2026-04-01"</span> }'</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- MATERIAL -->
+<div id="ep-material" class="section-anchor mb-5">
+  <h4 class="fw-bold mb-3"><i class="bi bi-boxes me-2 text-primary"></i>Material</h4>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-GET">GET</span>
+      <span class="url">/api/material</span>
+      <span class="ms-auto role role-all">alle Rollen</span>
+    </div>
+    <div class="card-body">
+      <table class="table table-sm param-table mb-3">
+        <thead><tr><th>Parameter</th><th>Typ</th><th></th><th>Beschreibung</th></tr></thead>
+        <tbody>
+          <tr><td><code>search</code></td><td>string</td><td><span class="opt">Optional</span></td><td>Suche im Materialnamen</td></tr>
+          <tr><td><code>niedrig_bestand</code></td><td>—</td><td><span class="opt">Optional</span></td><td>Nur Materialien mit Bestand &lt; 5</td></tr>
+          <tr><td><code>bestellliste</code></td><td>—</td><td><span class="opt">Optional</span></td><td>Materialien deren Bestand für Aufträge nicht reicht</td></tr>
+          <tr><td><code>nachbestellen</code></td><td>—</td><td><span class="opt">Optional</span></td><td>View: kritische Bestände (&lt; 5)</td></tr>
+          <tr><td><code>meistverwendet</code></td><td>—</td><td><span class="opt">Optional</span></td><td>Meist verwendete Materialien</td></tr>
+        </tbody>
+      </table>
+      <div class="code"><pre><span class="cc"># Alle Materialien</span>
+curl http://localhost/api/material \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span>
+
+<span class="cc"># Nur kritische Bestände</span>
+curl "http://localhost/api/material?niedrig_bestand=1" \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span>
+
+<span class="cc"># Bestellliste (zu wenig für Aufträge)</span>
+curl "http://localhost/api/material?bestellliste=1" \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-POST">POST</span>
+      <span class="url">/api/material</span>
+      <span class="ms-auto role role-meister">meister+</span>
+    </div>
+    <div class="card-body">
+      <table class="table table-sm param-table mb-3">
+        <thead><tr><th>Feld</th><th>Typ</th><th></th><th>Beschreibung</th></tr></thead>
+        <tbody>
+          <tr><td><code>name</code></td><td>string</td><td><span class="req">Pflicht</span></td><td>Materialbezeichnung</td></tr>
+          <tr><td><code>preis_pro_einheit</code></td><td>float</td><td><span class="req">Pflicht</span></td><td>Preis &gt; 0</td></tr>
+          <tr><td><code>beschreibung</code></td><td>string</td><td><span class="opt">Optional</span></td><td>Kurzbeschreibung</td></tr>
+          <tr><td><code>einheit</code></td><td>string</td><td><span class="opt">Optional</span></td><td>Standard: <code>Stück</code></td></tr>
+          <tr><td><code>lagerbestand</code></td><td>int</td><td><span class="opt">Optional</span></td><td>Standard: 0, darf nicht negativ sein</td></tr>
+        </tbody>
+      </table>
+      <div class="code"><pre>curl -X POST http://localhost/api/material \
+  -H <span class="cv">"X-API-Key: meister-key-67890"</span> \
+  -H <span class="cv">"Content-Type: application/json"</span> \
+  -d '{
+    <span class="ck">"name"</span>:              <span class="cv">"Kupferrohr 22mm"</span>,
+    <span class="ck">"beschreibung"</span>:     <span class="cv">"Heizungsrohr"</span>,
+    <span class="ck">"einheit"</span>:          <span class="cv">"Meter"</span>,
+    <span class="ck">"lagerbestand"</span>:     <span class="cn">50</span>,
+    <span class="ck">"preis_pro_einheit"</span>: <span class="cn">15.90</span>
+  }'</pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-POST">POST</span>
+      <span class="url">/api/material/{id}/nachbestellen</span>
+      <span class="ms-auto role role-geselle">geselle+</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Erhöht den Lagerbestand via <code>sp_material_nachbestellen</code>.</p>
+      <div class="code"><pre>curl -X POST http://localhost/api/material/4/nachbestellen \
+  -H <span class="cv">"X-API-Key: geselle-key-11111"</span> \
+  -H <span class="cv">"Content-Type: application/json"</span> \
+  -d '{ <span class="ck">"menge"</span>: <span class="cn">20</span> }'</pre></div>
+    </div>
+  </div>
+
+  <div class="doc-card">
+    <div class="card-header">
+      <span class="m m-DELETE">DELETE</span>
+      <span class="url">/api/material/{id}</span>
+      <span class="ms-auto role role-admin">admin</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.875rem;">Löscht Material. Schlägt fehl wenn Material noch in Aufträgen verwendet wird → <span class="sc sc-4xx">409</span>.</p>
+      <div class="code"><pre>curl -X DELETE http://localhost/api/material/6 \
+  -H <span class="cv">"X-API-Key: admin-key-12345"</span></pre></div>
+    </div>
+  </div>
+</div>
+
+<div class="text-center text-muted py-4" style="font-size:.8rem;">
+  HandwerkerPro REST-API v1.0 · Slim Framework 4 · Sprint 5 · 2026
+</div>
+
+</div><!-- /main -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Aktiven Sidebar-Link beim Scrollen aktualisieren
+const sections = document.querySelectorAll('.section-anchor');
+const links    = document.querySelectorAll('.sidebar .nav

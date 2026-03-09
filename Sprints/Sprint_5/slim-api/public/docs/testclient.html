@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HandwerkerPro API — Test Client</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+:root { --accent:#4f6ef7; --dark:#1a1f2e; --success:#10b981; --danger:#ef4444; }
+body { background:#f0f2f5; font-family:'Segoe UI',sans-serif; }
+.sidebar { position:fixed;top:0;left:0;width:240px;height:100vh;background:var(--dark);overflow-y:auto;z-index:100; }
+.sidebar .brand { padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.08); }
+.sidebar .brand h6 { color:#fff;font-weight:700;margin:0;font-size:.95rem; }
+.nav-link { color:#9aa3c2;padding:7px 16px;font-size:.82rem;display:flex;align-items:center;gap:8px;border-radius:6px;margin:1px 8px; }
+.nav-link:hover { background:#2d3452;color:#fff; }
+.nav-link.active { background:var(--accent);color:#fff; }
+.section-label { color:#5a6383;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px 3px; }
+.main { margin-left:240px;padding:24px; }
+.card { border:none;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.07); }
+.method-badge { padding:3px 9px;border-radius:5px;font-weight:700;font-size:.75rem;min-width:58px;text-align:center; }
+.GET    { background:#e8f5e9;color:#2e7d32; }
+.POST   { background:#e3f2fd;color:#1565c0; }
+.PUT    { background:#fff3e0;color:#e65100; }
+.DELETE { background:#fce8e8;color:#c62828; }
+.url-input { font-family:monospace;font-size:.85rem;background:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;padding:8px 12px;width:100%; }
+.response-box { background:#1e1e2e;color:#cdd6f4;border-radius:10px;padding:16px;font-size:.82rem;max-height:400px;overflow-y:auto;font-family:monospace;white-space:pre-wrap; }
+.response-box.success { border-left:4px solid var(--success); }
+.response-box.error   { border-left:4px solid var(--danger); }
+.status-pill { padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:700; }
+.status-2xx { background:#d1fae5;color:#065f46; }
+.status-4xx { background:#fce8e8;color:#c62828; }
+.status-5xx { background:#fff3e0;color:#e65100; }
+.endpoint-group { margin-bottom:8px; }
+.endpoint-btn { width:100%;text-align:left;padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:.84rem;transition:.15s; }
+.endpoint-btn:hover { background:#f0f4ff;border-color:var(--accent); }
+.history-item { background:#f8f9fa;border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:.8rem;cursor:pointer;border:1px solid transparent; }
+.history-item:hover { border-color:var(--accent);background:#f0f4ff; }
+.api-key-bar { background:var(--dark);padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap; }
+.json-key   { color:#89b4fa; }
+.json-str   { color:#a6e3a1; }
+.json-num   { color:#fab387; }
+.json-bool  { color:#f38ba8; }
+.json-null  { color:#9399b2; }
+textarea.body-input { font-family:monospace;font-size:.83rem;border-radius:8px;border:1px solid #e0e0e0;background:#f8f9fa;resize:vertical; }
+.timing { color:#9399b2;font-size:.75rem; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="brand">
+    <div class="d-flex align-items-center gap-2">
+      <div style="background:var(--accent);border-radius:8px;width:30px;height:30px;display:grid;place-items:center">
+        <i class="bi bi-play-circle text-white" style="font-size:.9rem"></i>
+      </div>
+      <div><h6>API Test Client</h6><div style="color:#6b7598;font-size:.7rem">HandwerkerPro v1.0</div></div>
+    </div>
+  </div>
+
+  <div class="mt-2">
+    <div class="section-label">Auth</div>
+    <a class="nav-link" href="#" onclick="loadEndpoint('auth-login')"><i class="bi bi-key"></i> Login</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('auth-me')"><i class="bi bi-person-check"></i> Mein Profil</a>
+
+    <div class="section-label">Dashboard</div>
+    <a class="nav-link" href="#" onclick="loadEndpoint('dashboard')"><i class="bi bi-speedometer2"></i> Dashboard</a>
+
+    <div class="section-label">Kunden</div>
+    <a class="nav-link" href="#" onclick="loadEndpoint('kunden-list')"><i class="bi bi-list-ul"></i> Alle Kunden</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('kunden-get')"><i class="bi bi-person"></i> Kunden abrufen</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('kunden-post')"><i class="bi bi-person-plus"></i> Neuer Kunde</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('kunden-put')"><i class="bi bi-pencil"></i> Aktualisieren</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('kunden-delete')"><i class="bi bi-trash"></i> Löschen</a>
+
+    <div class="section-label">Aufträge</div>
+    <a class="nav-link" href="#" onclick="loadEndpoint('auf-list')"><i class="bi bi-list-ul"></i> Alle Aufträge</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('auf-get')"><i class="bi bi-clipboard"></i> Auftrag abrufen</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('auf-post')"><i class="bi bi-plus-circle"></i> Neuer Auftrag</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('auf-put')"><i class="bi bi-pencil"></i> Aktualisieren</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('auf-status')"><i class="bi bi-arrow-repeat"></i> Status ändern</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('auf-delete')"><i class="bi bi-trash"></i> Löschen</a>
+
+    <div class="section-label">Rechnungen</div>
+    <a class="nav-link" href="#" onclick="loadEndpoint('rech-list')"><i class="bi bi-list-ul"></i> Alle Rechnungen</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('rech-get')"><i class="bi bi-receipt"></i> Rechnung abrufen</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('rech-bezahlen')"><i class="bi bi-check-circle"></i> Als bezahlt markieren</a>
+
+    <div class="section-label">Material</div>
+    <a class="nav-link" href="#" onclick="loadEndpoint('mat-list')"><i class="bi bi-list-ul"></i> Alle Materialien</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('mat-get')"><i class="bi bi-box"></i> Material abrufen</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('mat-post')"><i class="bi bi-plus-circle"></i> Neues Material</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('mat-nachbestellen')"><i class="bi bi-arrow-up-circle"></i> Nachbestellen</a>
+    <a class="nav-link" href="#" onclick="loadEndpoint('mat-bestellliste')"><i class="bi bi-cart"></i> Bestellliste</a>
+
+    <div class="section-label">Tools</div>
+    <a class="nav-link" href="#" onclick="clearHistory()"><i class="bi bi-trash2"></i> Verlauf löschen</a>
+    <a class="nav-link" href="index.html"><i class="bi bi-book"></i> Dokumentation</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- API Key Bar -->
+  <div class="api-key-bar rounded-3 mb-3">
+    <i class="bi bi-shield-lock text-warning"></i>
+    <span style="color:#9aa3c2;font-size:.82rem">API-Key:</span>
+    <select id="apiKeySelect" class="form-select form-select-sm" style="width:auto;background:#2d3452;color:#fff;border-color:#3d4566;font-family:monospace;font-size:.8rem" onchange="document.getElementById('apiKeyCustom').value=this.value">
+      <option value="admin-key-12345">admin-key-12345 (Admin)</option>
+      <option value="meister-key-67890">meister-key-67890 (Meister)</option>
+      <option value="geselle-key-11111">geselle-key-11111 (Geselle)</option>
+      <option value="">-- Kein Key (Test 401) --</option>
+    </select>
+    <input type="text" id="apiKeyCustom" class="form-control form-control-sm" placeholder="Oder eigenen Key eingeben..."
+           style="width:220px;background:#2d3452;color:#fff;border-color:#3d4566;font-size:.8rem;font-family:monospace"
+           value="admin-key-12345">
+    <span style="color:#9aa3c2;font-size:.82rem">Base-URL:</span>
+    <input type="text" id="baseUrl" class="form-control form-control-sm"
+           style="width:200px;background:#2d3452;color:#fff;border-color:#3d4566;font-size:.8rem;font-family:monospace"
+           value="http://localhost/api">
+  </div>
+
+  <div class="row g-3">
+    <!-- REQUEST PANEL -->
+    <div class="col-lg-7">
+      <div class="card p-0 overflow-hidden">
+        <div style="background:#f8f9fa;padding:12px 16px;border-bottom:1px solid #eee;">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <select id="reqMethod" class="form-select form-select-sm fw-bold" style="width:100px"
+                    onchange="updateMethodStyle()">
+              <option value="GET">GET</option>
+              <option value="POST">POST</option>
+              <option value="PUT">PUT</option>
+              <option value="DELETE">DELETE</option>
+            </select>
+            <input type="text" id="reqUrl" class="url-input flex-grow-1" placeholder="/kunden" value="/dashboard">
+            <button class="btn btn-primary btn-sm px-3 fw-bold" onclick="sendRequest()">
+              <i class="bi bi-send me-1"></i>Senden
+            </button>
+          </div>
+        </div>
+        <div class="p-3">
+          <div class="d-flex gap-2 mb-2">
+            <span class="fw-bold" style="font-size:.85rem">Request Body</span>
+            <span id="bodyHint" style="color:#9aa3c2;font-size:.78rem">(für GET nicht benötigt)</span>
+          </div>
+          <textarea id="reqBody" class="body-input form-control" rows="8" placeholder='{"key": "value"}'></textarea>
+
+          <div class="mt-2 d-flex gap-2 flex-wrap">
+            <button class="btn btn-outline-secondary btn-sm" onclick="formatJson()"><i class="bi bi-braces me-1"></i>Format JSON</button>
+            <button class="btn btn-outline-secondary btn-sm" onclick="clearBody()"><i class="bi bi-x-circle me-1"></i>Leeren</button>
+            <div class="ms-auto">
+              <small class="text-muted">Strg+Enter = Senden</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESPONSE -->
+      <div class="card mt-3 p-0 overflow-hidden">
+        <div style="background:#f8f9fa;padding:10px 16px;border-bottom:1px solid #eee;" class="d-flex align-items-center justify-content-between">
+          <span class="fw-bold" style="font-size:.85rem">Antwort</span>
+          <div class="d-flex align-items-center gap-2">
+            <span id="statusBadge" style="display:none"></span>
+            <span id="timingLabel" class="timing"></span>
+            <button class="btn btn-outline-secondary btn-sm py-0" onclick="copyResponse()"><i class="bi bi-copy"></i></button>
+          </div>
+        </div>
+        <div class="p-3">
+          <div id="responseBox" class="response-box">
+<span style="color:#6b7598">// Hier erscheint die API-Antwort...
+// Wähle links einen Endpoint oder sende eine Anfrage.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="col-lg-5">
+      <!-- Quick Tests -->
+      <div class="card p-3 mb-3">
+        <h6 class="fw-bold mb-3"><i class="bi bi-lightning-charge me-2 text-warning"></i>Quick-Tests</h6>
+        <div class="d-flex flex-column gap-2">
+          <button class="btn btn-outline-primary btn-sm text-start" onclick="runQuickTest('dashboard')">
+            <span class="method-badge GET me-2">GET</span>/api/dashboard
+          </button>
+          <button class="btn btn-outline-primary btn-sm text-start" onclick="runQuickTest('kunden-list')">
+            <span class="method-badge GET me-2">GET</span>/api/kunden
+          </button>
+          <button class="btn btn-outline-primary btn-sm text-start" onclick="runQuickTest('auf-list')">
+            <span class="method-badge GET me-2">GET</span>/api/auftraege
+          </button>
+          <button class="btn btn-outline-primary btn-sm text-start" onclick="runQuickTest('rech-list')">
+            <span class="method-badge GET me-2">GET</span>/api/rechnungen
+          </button>
+          <button class="btn btn-outline-primary btn-sm text-start" onclick="runQuickTest('mat-list')">
+            <span class="method-badge GET me-2">GET</span>/api/material
+          </button>
+          <button class="btn btn-outline-success btn-sm text-start" onclick="runQuickTest('kunden-post')">
+            <span class="method-badge POST me-2">POST</span>/api/kunden (Privat)
+          </button>
+          <button class="btn btn-outline-success btn-sm text-start" onclick="runQuickTest('auf-post')">
+            <span class="method-badge POST me-2">POST</span>/api/auftraege
+          </button>
+          <button class="btn btn-outline-warning btn-sm text-start" onclick="runQuickTest('test-401')">
+            <span class="method-badge GET me-2">GET</span>Test 401 (kein Key)
+          </button>
+          <button class="btn btn-outline-warning btn-sm text-start" onclick="runQuickTest('test-403')">
+            <span class="method-badge DELETE me-2">DELETE</span>Test 403 (falsche Rolle)
+          </button>
+          <button class="btn btn-outline-danger btn-sm text-start" onclick="runQuickTest('test-422')">
+            <span class="method-badge POST me-2">POST</span>Test 422 (Validierung)
+          </button>
+        </div>
+      </div>
+
+      <!-- Request History -->
+      <div class="card p-3">
+        <h6 class="fw-bold mb-2"><i class="bi bi-clock-history me-2"></i>Verlauf <small class="text-muted fw-normal" id="historyCount">(0)</small></h6>
+        <div id="historyList" style="max-height:280px;overflow-y:auto;">
+          <div class="text-muted" style="font-size:.8rem">Noch keine Anfragen...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  ENDPOINT PRESETS
+// ============================================================
+const ENDPOINTS = {
+  'auth-login': { method:'POST', url:'/auth/login', body:{ email:'m.mustermann@handwerker.de', password:'demo123' }},
+  'auth-me':    { method:'GET',  url:'/auth/me', body:null },
+  'dashboard':  { method:'GET',  url:'/dashboard', body:null },
+
+  'kunden-list':   { method:'GET',  url:'/kunden?page=1&limit=10', body:null },
+  'kunden-get':    { method:'GET',  url:'/kunden/1', body:null },
+  'kunden-post':   { method:'POST', url:'/kunden', body:{ typ:'privat', vorname:'Max', nachname:'Testmann', ist_stammkunde:false, notizen:'API-Test Kunde', kontakt_typ:'Mobil', kontakt_wert:'0170-1234567' }},
+  'kunden-post-firma': { method:'POST', url:'/kunden', body:{ typ:'firma', firmenname:'Test GmbH', ansprechpartner:'Herr Tester', ust_id:'DE999999999' }},
+  'kunden-put':    { method:'PUT',  url:'/kunden/1', body:{ ist_stammkunde:true, notizen:'Aktualisiert via API' }},
+  'kunden-delete': { method:'DELETE', url:'/kunden/9', body:null },
+
+  'auf-list':   { method:'GET',  url:'/auftraege?page=1&limit=10', body:null },
+  'auf-list-filter': { method:'GET', url:'/auftraege?status=neu,aktiv&prioritaet=notfall', body:null },
+  'auf-get':    { method:'GET',  url:'/auftraege/1', body:null },
+  'auf-post':   { method:'POST', url:'/auftraege', body:{ kunden_id:1, titel:'Rohrreparatur Keller', prioritaet:'dringend', beschreibung:'Rohr undicht, Wasser tritt aus' }},
+  'auf-put':    { method:'PUT',  url:'/auftraege/3', body:{ titel:'Heizung Update', prioritaet:'normal', beschreibung:'Aktualisierte Beschreibung' }},
+  'auf-status': { method:'PUT',  url:'/auftraege/3/status', body:{ status:'aktiv' }},
+  'auf-status-abschliessen': { method:'PUT', url:'/auftraege/3/status', body:{ status:'abgeschlossen' }},
+  'auf-delete': { method:'DELETE', url:'/auftraege/15', body:null },
+
+  'rech-list':     { method:'GET',  url:'/rechnungen?page=1&limit=10', body:null },
+  'rech-ueberfaellig': { method:'GET', url:'/rechnungen?ueberfaellig=true', body:null },
+  'rech-get':      { method:'GET',  url:'/rechnungen/1', body:null },
+  'rech-bezahlen': { method:'POST', url:'/rechnungen/3/bezahlen', body:null },
+
+  'mat-list':        { method:'GET',  url:'/material?page=1&limit=10', body:null },
+  'mat-get':         { method:'GET',  url:'/material/1', body:null },
+  'mat-post':        { method:'POST', url:'/material', body:{ name:'Testmaterial API', beschreibung:'Via API erstellt', einheit:'Stück', lagerbestand:25, preis_pro_einheit:19.99 }},
+  'mat-nachbestellen': { method:'POST', url:'/material/4/nachbestellen', body:{ menge:10 }},
+  'mat-bestellliste':  { method:'GET', url:'/material?bestellliste=1', body:null },
+  'mat-kritisch':      { method:'GET', url:'/material?niedrig_bestand=1', body:null },
+
+  // Test-Fälle
+  'test-401': { method:'GET', url:'/kunden', body:null, noKey:true },
+  'test-403': { method:'DELETE', url:'/material/1', body:null, useKey:'geselle-key-11111' },
+  'test-422': { method:'POST', url:'/kunden', body:{ typ:'privat' /* vorname/nachname fehlen */ }},
+};
+
+let requestHistory = [];
+
+function loadEndpoint(key) {
+  const ep = ENDPOINTS[key];
+  if (!ep) return;
+  document.getElementById('reqMethod').value = ep.method;
+  document.getElementById('reqUrl').value = ep.url;
+  document.getElementById('reqBody').value = ep.body ? JSON.stringify(ep.body, null, 2) : '';
+  updateMethodStyle();
+  document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.sidebar .nav-link').forEach(l => {
+    if (l.getAttribute('onclick') && l.getAttribute('onclick').includes(key)) l.classList.add('active');
+  });
+}
+
+async function runQuickTest(key) {
+  const ep = ENDPOINTS[key];
+  if (!ep) return;
+  loadEndpoint(key);
+  // Temporärer Key-Override
+  const origKey = document.getElementById('apiKeyCustom').value;
+  if (ep.noKey) document.getElementById('apiKeyCustom').value = '';
+  if (ep.useKey) document.getElementById('apiKeyCustom').value = ep.useKey;
+  await sendRequest();
+  if (ep.noKey || ep.useKey) document.getElementById('apiKeyCustom').value = origKey;
+}
+
+function updateMethodStyle() {
+  const method = document.getElementById('reqMethod').value;
+  const hint   = document.getElementById('bodyHint');
+  hint.textContent = (method === 'GET' || method === 'DELETE') ? '(für ' + method + ' nicht benötigt)' : '(JSON)';
+}
+
+async function sendRequest() {
+  const method  = document.getElementById('reqMethod').value;
+  const relUrl  = document.getElementById('reqUrl').value.trim();
+  const baseUrl = document.getElementById('baseUrl').value.trim().replace(/\/$/, '');
+  const apiKey  = document.getElementById('apiKeyCustom').value.trim();
+  const bodyRaw = document.getElementById('reqBody').value.trim();
+
+  const fullUrl = baseUrl + (relUrl.startsWith('/') ? relUrl : '/' + relUrl);
+  const t0 = performance.now();
+
+  const headers = { 'Content-Type': 'application/json' };
+  if (apiKey) headers['X-API-Key'] = apiKey;
+
+  const opts = { method, headers };
+  if (bodyRaw && method !== 'GET' && method !== 'DELETE') {
+    try { JSON.parse(bodyRaw); opts.body = bodyRaw; }
+    catch(e) { showResponse(null, 0, 0, 'Ungültiges JSON: ' + e.message); return; }
+  }
+
+  try {
+    const res  = await fetch(fullUrl, opts);
+    const ms   = Math.round(performance.now() - t0);
+    const text = await res.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = text; }
+    showResponse(data, res.status, ms);
+    addHistory(method, relUrl, res.status, ms);
+  } catch(e) {
+    const ms = Math.round(performance.now() - t0);
+    showResponse(null, 0, ms, 'Verbindungsfehler: ' + e.message + '\n\nStelle sicher, dass der PHP-Server läuft und die Base-URL korrekt ist.');
+  }
+}
+
+function showResponse(data, status, ms, errMsg) {
+  const box = document.getElementById('responseBox');
+  const badge = document.getElementById('statusBadge');
+  const timing = document.getElementById('timingLabel');
+
+  timing.textContent = ms ? ms + ' ms' : '';
+
+  if (errMsg) {
+    box.className = 'response-box error';
+    box.innerHTML = '<span style="color:#f38ba8">' + errMsg + '</span>';
+    badge.style.display = 'none';
+    return;
+  }
+
+  const cls = status >= 500 ? 'status-5xx' : status >= 400 ? 'status-4xx' : 'status-2xx';
+  badge.style.display = '';
+  badge.className = 'status-pill ' + cls;
+  badge.textContent = 'HTTP ' + status;
+
+  box.className = 'response-box ' + (status < 400 ? 'success' : 'error');
+  box.innerHTML = syntaxHighlight(JSON.stringify(data, null, 2));
+}
+
+function syntaxHighlight(json) {
+  json = json.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, m => {
+    let cls = 'json-num';
+    if (/^"/.test(m)) { cls = /:$/.test(m) ? 'json-key' : 'json-str'; }
+    else if (/true|false/.test(m)) cls = 'json-bool';
+    else if (/null/.test(m)) cls = 'json-null';
+    return `<span class="${cls}">${m}</span>`;
+  });
+}
+
+function addHistory(method, url, status, ms) {
+  requestHistory.unshift({ method, url, status, ms, time: new Date().toLocaleTimeString() });
+  if (requestHistory.length > 20) requestHistory.pop();
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  document.getElementById('historyCount').textContent = '(' + requestHistory.length + ')';
+  if (!requestHistory.length) { list.innerHTML = '<div class="text-muted" style="font-size:.8rem">Noch keine Anfragen...</div>'; return; }
+  list.innerHTML = requestHistory.map((h, i) => `
+    <div class="history-item" onclick="restoreHistory(${i})">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <span class="method-badge ${h.method}" style="font-size:.7rem;padding:2px 6px">${h.method}</span>
+          <span style="font-family:monospace;font-size:.78rem;color:#374151">${h.url.split('?')[0]}</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="status-pill ${h.status>=500?'status-5xx':h.status>=400?'status-4xx':'status-2xx'}" style="font-size:.68rem">${h.status}</span>
+          <span class="timing">${h.ms}ms</span>
+        </div>
+      </div>
+      <div style="color:#9aa3c2;font-size:.7rem;margin-top:2px">${h.time}</div>
+    </div>
+  `).join('');
+}
+
+function restoreHistory(i) {
+  const h = requestHistory[i];
+  document.getElementById('reqMethod').value = h.method;
+  document.getElementById('reqUrl').value = h.url;
+  updateMethodStyle();
+}
+
+function clearHistory() { requestHistory = []; renderHistory(); }
+
+function formatJson() {
+  const ta = document.getElementById('reqBody');
+  try { ta.value = JSON.stringify(JSON.parse(ta.value), null, 2); }
+  catch(e) { alert('Ungültiges JSON: ' + e.message); }
+}
+
+function clearBody() { document.getElementById('reqBody').value = ''; }
+
+function copyResponse() {
+  const text = document.getElementById('responseBox').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target.closest('button');
+    btn.innerHTML = '<i class="bi bi-check2"></i>';
+    setTimeout(() => btn.innerHTML = '<i class="bi bi-copy"></i>', 1500);
+  });
+}
+
+// Strg+Enter zum Senden
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') sendRequest();
+});
+
+// Init
+loadEndpoint('dashboard');
+</script>
+</body>
+</html>
