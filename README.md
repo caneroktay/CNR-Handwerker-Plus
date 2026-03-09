@@ -1,8 +1,8 @@
-# CNR Handwerker PLUS
+# CNR Handwerker PLUS 
 
 ## Die smarte Handwerker-Verwaltung
 
-**Projektfortschritt:**  ![Progress Bar](https://geps.dev/progress/65)  -  Status: Sprint 5 hat begonnen. 
+**Projektfortschritt:**  ![Progress Bar](https://geps.dev/progress/65)  -  Status: Sprint 5 hat begonnen.
 
 ![](./images/handwerkerpro.jpg)
 
@@ -31,3 +31,8 @@ Datenbank: MySQL – mit fortschrittlicher Nutzung von Stored Procedures, Trigge
 Das ERD zu Beginn des Projekts sieht wie folgt aus: (Es ändert sich am Ende jedes Sprints.)
 
 ![](./Sprints/Sprint_1/ERD.png)
+
+
+
+
+- [Detaillierte Dokumentation](http://caneroktay.com/CNR-Handwerker-Plus/)
