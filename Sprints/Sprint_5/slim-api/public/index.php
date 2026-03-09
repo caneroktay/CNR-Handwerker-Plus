@@ -17,6 +17,35 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 // ── Autoloader ───────────────────────────────────────────────
 require __DIR__ . '/../vendor/autoload.php';
 
+// ── .env Datei laden ─────────────────────────────────────────
+// Liest .env aus dem Projekt-Root und setzt $_ENV Variablen.
+// Secrets (API-Keys, Passwörter) gehören in .env, niemals in den Code!
+(function () {
+    $envFile = __DIR__ . '/../.env';
+    if (!file_exists($envFile)) return;
+
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '' || str_starts_with($line, '#')) continue;
+        if (!str_contains($line, '=')) continue;
+
+        [$key, $value] = explode('=', $line, 2);
+        $key   = trim($key);
+        $value = trim($value);
+
+        // Inline-Kommentare entfernen (z.B.: value # kommentar)
+        if (str_contains($value, ' #')) {
+            $value = trim(explode(' #', $value, 2)[0]);
+        }
+
+        if (!isset($_ENV[$key])) {
+            $_ENV[$key] = $value;
+            putenv("{$key}={$value}");
+        }
+    }
+})();
+
 // ── Konfiguration laden ──────────────────────────────────────
 $settings = require __DIR__ . '/../config/settings.php';
 $dbConfig = require __DIR__ . '/../config/database.php';
