@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HandwerkerPro — Reporting Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --accent:  #4f6ef7;
+  --dark:    #1a1f2e;
+  --teal:    #0d9488;
+  --indigo:  #6366f1;
+  --green:   #10b981;
+  --orange:  #f59e0b;
+  --red:     #ef4444;
+  --muted:   #64748b;
+}
+* { box-sizing: border-box; }
+body { background:#f0f2f5; font-family:'Segoe UI',sans-serif; color:#1a1f2e; margin:0; }
+
+/* ── TOPBAR ─────────────────────────────────── */
+.topbar {
+  background:var(--dark); padding:12px 28px;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  position:sticky; top:0; z-index:100;
+  box-shadow:0 2px 12px rgba(0,0,0,.25);
+}
+.topbar .brand { color:#fff; font-weight:800; font-size:1rem; margin-right:8px; }
+.topbar .brand small { color:#6b7598; font-weight:400; font-size:.75rem; margin-left:6px; }
+
+.topbar select, .topbar input {
+  background:#2d3452; color:#fff; border:1px solid #3d4566;
+  border-radius:6px; padding:5px 10px; font-size:.82rem; font-family:monospace;
+}
+.topbar label { color:#9aa3c2; font-size:.82rem; }
+
+.btn-refresh {
+  background:var(--accent); color:#fff; border:none;
+  border-radius:6px; padding:6px 16px; font-size:.82rem; cursor:pointer;
+  display:flex; align-items:center; gap:6px; transition:.15s;
+}
+.btn-refresh:hover { background:#3d5ce0; }
+.btn-refresh:disabled { opacity:.5; cursor:default; }
+
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:8px; }
+.back-link { color:#9aa3c2; font-size:.82rem; text-decoration:none; }
+.back-link:hover { color:#fff; }
+
+/* ── MAIN ───────────────────────────────────── */
+.main { padding:28px 32px; }
+
+/* ── KPI CARDS ──────────────────────────────── */
+.kpi-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:14px; margin-bottom:28px; }
+.kpi-card {
+  background:#fff; border-radius:12px; padding:18px 20px;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
+  border-left:4px solid var(--accent); transition:.2s;
+}
+.kpi-card:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(0,0,0,.1); }
+.kpi-label { font-size:.75rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; }
+.kpi-value { font-size:1.6rem; font-weight:800; line-height:1; margin-bottom:4px; }
+.kpi-sub   { font-size:.75rem; color:var(--muted); }
+.kpi-trend { font-size:.75rem; font-weight:700; }
+.kpi-trend.up   { color:var(--green); }
+.kpi-trend.down { color:var(--red); }
+.kpi-trend.neu  { color:var(--muted); }
+
+/* ── CHART CARDS ────────────────────────────── */
+.chart-card {
+  background:#fff; border-radius:12px; padding:20px 24px;
+  box-shadow:0 2px 10px rgba(0,0,0,.06); margin-bottom:24px;
+}
+.chart-card .card-title {
+  font-size:.9rem; font-weight:700; margin-bottom:4px;
+  display:flex; align-items:center; gap:8px;
+}
+.chart-card .card-sub { font-size:.78rem; color:var(--muted); margin-bottom:16px; }
+.chart-wrap { position:relative; }
+
+/* ── TABLE ──────────────────────────────────── */
+.data-table { width:100%; border-collapse:collapse; font-size:.83rem; }
+.data-table th {
+  background:#f8fafc; padding:8px 12px; text-align:left;
+  font-size:.72rem; font-weight:700; color:var(--muted);
+  text-transform:uppercase; letter-spacing:.05em;
+  border-bottom:2px solid #e2e8f0;
+}
+.data-table td { padding:10px 12px; border-bottom:1px solid #f1f5f9; }
+.data-table tr:hover td { background:#f8fafc; }
+.data-table tr:last-child td { border-bottom:none; }
+
+/* ── BADGE ──────────────────────────────────── */
+.role-badge {
+  display:inline-block; padding:2px 10px; border-radius:20px;
+  font-size:.7rem; font-weight:700;
+}
+.badge-privat { background:#eff6ff; color:#1d4ed8; }
+.badge-firma  { background:#f0fdf4; color:#15803d; }
+
+/* ── PROGRESS BAR ───────────────────────────── */
+.prog-bar { background:#e2e8f0; border-radius:4px; height:8px; overflow:hidden; }
+.prog-fill { height:100%; border-radius:4px; background:var(--accent); transition:.4s; }
+
+/* ── LOADING ────────────────────────────────── */
+.loading-overlay {
+  position:fixed; inset:0; background:rgba(240,242,245,.85);
+  display:flex; align-items:center; justify-content:center;
+  z-index:999; opacity:0; pointer-events:none; transition:.2s;
+}
+.loading-overlay.show { opacity:1; pointer-events:all; }
+.loading-spinner {
+  background:#fff; border-radius:12px; padding:28px 36px;
+  box-shadow:0 8px 32px rgba(0,0,0,.12);
+  display:flex; align-items:center; gap:16px; font-weight:600;
+}
+
+/* ── SECTION TITLE ──────────────────────────── */
+.section-title {
+  font-size:.72rem; font-weight:700; color:var(--muted);
+  text-transform:uppercase; letter-spacing:.08em;
+  margin:0 0 12px; display:flex; align-items:center; gap:8px;
+}
+.section-title::after {
+  content:''; flex:1; height:1px; background:#e2e8f0;
+}
+
+/* ── ERROR TOAST ────────────────────────────── */
+.error-toast {
+  position:fixed; bottom:20px; right:20px; z-index:9999;
+  background:#fef2f2; border:1px solid #fecaca; border-radius:8px;
+  padding:12px 16px; font-size:.83rem; color:#dc2626;
+  max-width:340px; display:none; box-shadow:0 4px 16px rgba(0,0,0,.1);
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ TOPBAR ══════════════ -->
+<div class="topbar">
+  <span class="brand">HandwerkerPro <small>Reporting Dashboard</small></span>
+
+  <label>API-Key:</label>
+  <input type="text" id="apiKey" value="admin-key-12345" style="width:180px" placeholder="X-API-Key">
+
+  <label>Jahr:</label>
+  <select id="selJahr"></select>
+
+  <label>Monat:</label>
+  <select id="selMonat">
+    <option value="">Gesamtes Jahr</option>
+    <option value="1">Januar</option>  <option value="2">Februar</option>
+    <option value="3">März</option>    <option value="4">April</option>
+    <option value="5">Mai</option>     <option value="6">Juni</option>
+    <option value="7">Juli</option>    <option value="8">August</option>
+    <option value="9">September</option><option value="10">Oktober</option>
+    <option value="11">November</option><option value="12">Dezember</option>
+  </select>
+
+  <button class="btn-refresh" id="btnRefresh" onclick="loadAll()">
+    <i class="bi bi-arrow-clockwise"></i> Aktualisieren
+  </button>
+
+  <div class="topbar-right">
+    <a href="index.html" class="back-link"><i class="bi bi-book me-1"></i>Dokumentation</a>
+    <a href="testclient.html" class="back-link ms-2"><i class="bi bi-terminal me-1"></i>Test-Client</a>
+  </div>
+</div>
+
+<!-- ══════════════ LOADING ══════════════ -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner">
+    <div class="spinner-border text-primary" style="width:1.4rem;height:1.4rem;"></div>
+    Daten werden geladen…
+  </div>
+</div>
+
+<!-- ══════════════ ERROR TOAST ══════════════ -->
+<div class="error-toast" id="errorToast"></div>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div class="main">
+
+  <!-- KPI GRID -->
+  <div class="section-title"><i class="bi bi-speedometer2"></i> Kennzahlen</div>
+  <div class="kpi-grid" id="kpiGrid">
+    <!-- dynamisch befüllt -->
+    <div class="kpi-card" style="border-left-color:var(--teal)">
+      <div class="kpi-label">Monatsumsatz (netto)</div>
+      <div class="kpi-value" id="kpi-umsatz">—</div>
+      <div class="kpi-sub"><span class="kpi-trend" id="kpi-trend">—</span></div>
+    </div>
+    <div class="kpi-card" style="border-left-color:var(--indigo)">
+      <div class="kpi-label">Abgeschlossene Aufträge</div>
+      <div class="kpi-value" id="kpi-auftraege">—</div>
+      <div class="kpi-sub" id="kpi-auftraege-sub">diesen Monat</div>
+    </div>
+    <div class="kpi-card" style="border-left-color:var(--orange)">
+      <div class="kpi-label">Offene Aufträge</div>
+      <div class="kpi-value" id="kpi-offen">—</div>
+      <div class="kpi-sub">gesamt ausstehend</div>
+    </div>
+    <div class="kpi-card" style="border-left-color:var(--red)">
+      <div class="kpi-label">Offene Rechnungen</div>
+      <div class="kpi-value" id="kpi-rechnungen">—</div>
+      <div class="kpi-sub" id="kpi-betrag">—</div>
+    </div>
+    <div class="kpi-card" style="border-left-color:var(--green)">
+      <div class="kpi-label">Neue Kunden</div>
+      <div class="kpi-value" id="kpi-kunden">—</div>
+      <div class="kpi-sub">diesen Monat</div>
+    </div>
+    <div class="kpi-card" style="border-left-color:var(--accent)">
+      <div class="kpi-label">Jahresumsatz (netto)</div>
+      <div class="kpi-value" id="kpi-jahr-umsatz">—</div>
+      <div class="kpi-sub" id="kpi-jahr-sub">—</div>
+    </div>
+  </div>
+
+  <!-- UMSATZ CHART + TOP KUNDEN -->
+  <div class="row g-4 mb-4">
+
+    <div class="col-lg-8">
+      <div class="chart-card">
+        <div class="card-title">
+          <i class="bi bi-bar-chart-line" style="color:var(--teal)"></i>
+          Umsatz <span id="umsatzChartTitle">2026</span>
+        </div>
+        <div class="card-sub" id="umsatzChartSub">Netto-Umsatz nach Monat · Vorjahresvergleich</div>
+        <div class="chart-wrap" style="height:280px;">
+          <canvas id="chartUmsatz"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="chart-card h-100">
+        <div class="card-title">
+          <i class="bi bi-pie-chart" style="color:var(--indigo)"></i>
+          Top Kunden <span id="topKundenJahr">2026</span>
+        </div>
+        <div class="card-sub">Umsatzanteil Top 6</div>
+        <div class="chart-wrap" style="height:220px;">
+          <canvas id="chartKunden"></canvas>
+        </div>
+        <div id="kundenLegend" class="mt-2" style="font-size:.75rem;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MITARBEITER AUSLASTUNG -->
+  <div class="chart-card mb-4">
+    <div class="card-title">
+      <i class="bi bi-people" style="color:var(--orange)"></i>
+      Mitarbeiter-Auslastung <span id="maJahr">2026</span>
+    </div>
+    <div class="card-sub">Arbeitsstunden pro Monat · alle aktiven Mitarbeiter</div>
+    <div class="chart-wrap" style="height:280px;">
+      <canvas id="chartMitarbeiter"></canvas>
+    </div>
+  </div>
+
+  <!-- TOP KUNDEN TABELLE -->
+  <div class="chart-card">
+    <div class="card-title">
+      <i class="bi bi-trophy" style="color:var(--orange)"></i>
+      Top 10 Kunden <span id="topTableJahr">2026</span>
+    </div>
+    <div class="card-sub">Nach Netto-Umsatz sortiert</div>
+    <div style="overflow-x:auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Kunde</th>
+            <th>Typ</th>
+            <th>Aufträge</th>
+            <th>Netto (€)</th>
+            <th>Brutto (€)</th>
+            <th>Anteil</th>
+          </tr>
+        </thead>
+        <tbody id="kundenTable">
+          <tr><td colspan="7" style="color:#94a3b8;text-align:center;padding:20px;">Daten werden geladen…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+'use strict';
+
+// ══════════════════════════════════════════════════════
+//  KONFIGURATION
+// ══════════════════════════════════════════════════════
+const BASE_URL = 'http://localhost/api';
+
+// Chart-Farbpalette
+const COLORS = [
+  '#4f6ef7','#0d9488','#f59e0b','#ef4444','#10b981',
+  '#6366f1','#8b5cf6','#ec4899','#06b6d4','#84cc16',
+];
+
+// ══════════════════════════════════════════════════════
+//  CHART INSTANZEN
+// ══════════════════════════════════════════════════════
+let chartUmsatz     = null;
+let chartMitarbeiter = null;
+let chartKunden     = null;
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  // Jahresauswahl befüllen (5 Jahre zurück + 1 Jahr vor)
+  const selJahr = document.getElementById('selJahr');
+  const aktJahr = new Date().getFullYear();
+  for (var y = aktJahr + 1; y >= aktJahr - 4; y--) {
+    var opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    if (y === aktJahr) opt.selected = true;
+    selJahr.appendChild(opt);
+  }
+
+  // Aktuellen Monat vorauswählen
+  document.getElementById('selMonat').value = new Date().getMonth() + 1;
+
+  loadAll();
+});
+
+// ══════════════════════════════════════════════════════
+//  DATEN LADEN
+// ══════════════════════════════════════════════════════
+async function loadAll() {
+  const jahr  = document.getElementById('selJahr').value;
+  const monat = document.getElementById('selMonat').value;
+  const key   = document.getElementById('apiKey').value.trim();
+
+  setLoading(true);
+
+  try {
+    const [kennzahlen, umsatz, auslastung, topKunden] = await Promise.all([
+      apiFetch('/reporting/kennzahlen?jahr=' + jahr + (monat ? '&monat=' + monat : ''), key),
+      apiFetch('/reporting/umsatz?jahr=' + jahr + (monat ? '&monat=' + monat : ''), key),
+      apiFetch('/reporting/mitarbeiter/auslastung?jahr=' + jahr, key),
+      apiFetch('/reporting/top-kunden?limit=10&jahr=' + jahr, key),
+    ]);
+
+    renderKpis(kennzahlen.data, jahr, monat);
+    renderUmsatzChart(umsatz.data, monat);
+    renderMitarbeiterChart(auslastung.data);
+    renderTopKunden(topKunden.data);
+
+    // Jahr-Labels aktualisieren
+    document.querySelectorAll('#umsatzChartTitle,#topKundenJahr,#maJahr,#topTableJahr')
+      .forEach(function(el) { el.textContent = jahr; });
+
+  } catch(e) {
+    showError('Fehler beim Laden: ' + e.message);
+  }
+
+  setLoading(false);
+}
+
+// ══════════════════════════════════════════════════════
+//  KPI RENDER
+// ══════════════════════════════════════════════════════
+function renderKpis(data, jahr, monat) {
+  if (!data) return;
+
+  document.getElementById('kpi-umsatz').textContent      = formatEuro(data.monat.umsatz_netto);
+  document.getElementById('kpi-auftraege').textContent   = data.monat.auftraege_abgeschlossen;
+  document.getElementById('kpi-offen').textContent       = data.gesamt_offen.auftraege;
+  document.getElementById('kpi-rechnungen').textContent  = data.gesamt_offen.rechnungen;
+  document.getElementById('kpi-betrag').textContent      = formatEuro(data.gesamt_offen.betrag_brutto) + ' offen (brutto)';
+  document.getElementById('kpi-kunden').textContent      = data.monat.neue_kunden;
+  document.getElementById('kpi-jahr-umsatz').textContent = formatEuro(data.jahr.umsatz_netto);
+  document.getElementById('kpi-jahr-sub').textContent    = data.jahr.auftraege + ' Aufträge in ' + jahr;
+
+  // Trend
+  const trend     = data.monat.umsatz_trend_prozent;
+  const trendEl   = document.getElementById('kpi-trend');
+  if (trend === null) {
+    trendEl.textContent = 'Kein Vormonat';
+    trendEl.className   = 'kpi-trend neu';
+  } else if (trend >= 0) {
+    trendEl.textContent = '▲ +' + trend + '% ggü. Vormonat';
+    trendEl.className   = 'kpi-trend up';
+  } else {
+    trendEl.textContent = '▼ ' + trend + '% ggü. Vormonat';
+    trendEl.className   = 'kpi-trend down';
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  UMSATZ CHART (Balken + Linie Vorjahr)
+// ══════════════════════════════════════════════════════
+function renderUmsatzChart(data, monat) {
+  if (!data) return;
+
+  const labels  = data.datenpunkte.map(function(d) { return d.label; });
+  const werte   = data.datenpunkte.map(function(d) { return d.umsatz_netto; });
+  const auftraege = data.datenpunkte.map(function(d) { return d.anzahl_auftraege; });
+
+  const datasets = [{
+    label: 'Umsatz netto (€)',
+    data: werte,
+    backgroundColor: COLORS[0] + '99',
+    borderColor: COLORS[0],
+    borderWidth: 2,
+    borderRadius: 5,
+    yAxisID: 'y',
+    type: 'bar',
+  }];
+
+  // Vorjahr nur bei Jahresansicht
+  if (!monat && data.vorjahr && data.vorjahr.werte) {
+    datasets.push({
+      label: 'Vorjahr ' + data.vorjahr.jahr + ' (€)',
+      data: data.vorjahr.werte,
+      borderColor: COLORS[4] + 'cc',
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      borderDash: [5,5],
+      pointRadius: 4,
+      pointBackgroundColor: COLORS[4],
+      tension: 0.3,
+      type: 'line',
+      yAxisID: 'y',
+    });
+  }
+
+  // Aufträge als zweite Y-Achse
+  datasets.push({
+    label: 'Aufträge',
+    data: auftraege,
+    borderColor: COLORS[2] + 'aa',
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    pointRadius: 4,
+    pointBackgroundColor: COLORS[2],
+    tension: 0.3,
+    type: 'line',
+    yAxisID: 'y2',
+  });
+
+  // Update oder neu erstellen
+  if (chartUmsatz) { chartUmsatz.destroy(); }
+  const ctx = document.getElementById('chartUmsatz').getContext('2d');
+  chartUmsatz = new Chart(ctx, {
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'top', labels: { font: { size: 11 } } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (ctx.dataset.yAxisID === 'y2') return ctx.dataset.label + ': ' + ctx.raw;
+              return ctx.dataset.label + ': ' + formatEuro(ctx.raw);
+            }
+          }
+        }
+      },
+      scales: {
+        y:  { position:'left',  ticks: { callback: function(v) { return formatEuroShort(v); }, font:{size:10} }, grid: { color:'#f1f5f9' } },
+        y2: { position:'right', ticks: { font:{size:10} }, grid: { drawOnChartArea:false } },
+        x:  { ticks: { font:{size:10} }, grid: { color:'#f8fafc' } },
+      }
+    }
+  });
+
+  document.getElementById('umsatzChartSub').textContent =
+    monat ? 'Tageswerte · Gesamt: ' + formatEuro(data.gesamt)
+           : 'Monatswerte · Gesamt: ' + formatEuro(data.gesamt) + ' · Vorjahr: ' + formatEuro(data.vorjahr ? data.vorjahr.gesamt : 0);
+}
+
+// ══════════════════════════════════════════════════════
+//  MITARBEITER CHART (Gestapelte Balken)
+// ══════════════════════════════════════════════════════
+function renderMitarbeiterChart(data) {
+  if (!data || !data.mitarbeiter || !data.mitarbeiter.length) {
+    if (chartMitarbeiter) { chartMitarbeiter.destroy(); chartMitarbeiter = null; }
+    document.getElementById('chartMitarbeiter').parentElement.innerHTML =
+      '<p style="color:#94a3b8;text-align:center;padding:40px">Keine Termindaten für dieses Jahr.</p>';
+    return;
+  }
+
+  const datasets = data.mitarbeiter.map(function(ma, i) {
+    return {
+      label: ma.name,
+      data: ma.stunden,
+      backgroundColor: COLORS[i % COLORS.length] + 'cc',
+      borderColor: COLORS[i % COLORS.length],
+      borderWidth: 1,
+      borderRadius: 3,
+    };
+  });
+
+  if (chartMitarbeiter) { chartMitarbeiter.destroy(); }
+  const ctx = document.getElementById('chartMitarbeiter').getContext('2d');
+  chartMitarbeiter = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: data.monate, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position:'top', labels: { font:{size:11} } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return ctx.dataset.label + ': ' + ctx.raw + ' Std.'; }
+          }
+        }
+      },
+      scales: {
+        x: { stacked: true, ticks:{ font:{size:10} }, grid:{ color:'#f8fafc' } },
+        y: { stacked: true, ticks:{ font:{size:10}, callback: function(v){ return v+' h'; } }, grid:{ color:'#f1f5f9' } },
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  TOP KUNDEN CHART (Donut) + TABELLE
+// ══════════════════════════════════════════════════════
+function renderTopKunden(data) {
+  if (!data || !data.kunden || !data.kunden.length) {
+    document.getElementById('kundenTable').innerHTML =
+      '<tr><td colspan="7" style="color:#94a3b8;text-align:center;padding:20px">Keine Daten.</td></tr>';
+    return;
+  }
+
+  // Donut — Top 6
+  const top6    = data.kunden.slice(0, 6);
+  const restSum = data.kunden.slice(6).reduce(function(s, k){ return s + k.umsatz_netto; }, 0);
+  const donutLabels = top6.map(function(k){ return k.name; });
+  const donutWerte  = top6.map(function(k){ return k.umsatz_netto; });
+  if (restSum > 0) { donutLabels.push('Weitere'); donutWerte.push(restSum); }
+
+  if (chartKunden) { chartKunden.destroy(); }
+  const ctx = document.getElementById('chartKunden').getContext('2d');
+  chartKunden = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: donutLabels,
+      datasets: [{
+        data: donutWerte,
+        backgroundColor: COLORS.map(function(c){ return c+'cc'; }),
+        borderColor: '#fff',
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) { return ' ' + formatEuro(ctx.raw); }
+          }
+        }
+      },
+      cutout: '62%',
+    }
+  });
+
+  // Legende
+  document.getElementById('kundenLegend').innerHTML = donutLabels.map(function(l, i) {
+    return '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:8px;margin-bottom:2px;">' +
+      '<span style="width:8px;height:8px;border-radius:2px;background:' + COLORS[i % COLORS.length] + ';display:inline-block;"></span>' +
+      '<span style="color:#64748b;">' + l + '</span></span>';
+  }).join('');
+
+  // Tabelle
+  document.getElementById('topTableJahr').textContent = data.jahr;
+  document.getElementById('topKundenJahr').textContent = data.jahr;
+  document.getElementById('kundenTable').innerHTML = data.kunden.map(function(k, i) {
+    var pct = k.anteil_prozent;
+    return '<tr>' +
+      '<td><strong>' + (i+1) + '</strong></td>' +
+      '<td>' + escHtml(k.name) + '</td>' +
+      '<td><span class="role-badge ' + (k.typ==='firma'?'badge-firma':'badge-privat') + '">' + k.typ + '</span></td>' +
+      '<td>' + k.auftraege + '</td>' +
+      '<td><strong>' + formatEuro(k.umsatz_netto) + '</strong></td>' +
+      '<td>' + formatEuro(k.umsatz_brutto) + '</td>' +
+      '<td>' +
+        '<div class="d-flex align-items-center gap-2">' +
+          '<div class="prog-bar" style="width:80px"><div class="prog-fill" style="width:' + Math.min(pct,100) + '%"></div></div>' +
+          '<span style="font-size:.75rem;color:#64748b;min-width:36px">' + pct + '%</span>' +
+        '</div>' +
+      '</td>' +
+      '</tr>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════
+//  HILFSFUNKTIONEN
+// ══════════════════════════════════════════════════════
+async function apiFetch(path, key) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (key) headers['X-API-Key'] = key;
+  const res  = await fetch(BASE_URL + path, { headers });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.message || 'HTTP ' + res.status);
+  return json;
+}
+
+function formatEuro(val) {
+  return Number(val).toLocaleString('de-DE', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' €';
+}
+
+function formatEuroShort(val) {
+  if (val >= 1000000) return (val/1000000).toFixed(1) + 'M €';
+  if (val >= 1000)    return (val/1000).toFixed(0) + 'k €';
+  return val + ' €';
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function setLoading(on) {
+  document.getElementById('loadingOverlay').classList.toggle('show', on);
+  document.getElementById('btnRefresh').disabled = on;
+  if (on) document.getElementById('btnRefresh').innerHTML =
+    '<span class="spinner-border spinner-border-sm"></span> Lädt…';
+  else document.getElementById('btnRefresh').innerHTML =
+    '<i class="bi bi-arrow-clockwise"></i> Aktualisieren';
+}
+
+function showError(msg) {
+  var el = document.getElementById('errorToast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(function(){ el.style.display = 'none'; }, 5000);
+}
+</script>
+</body>
+</html>
