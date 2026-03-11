@@ -2,7 +2,7 @@
 
 ## Die smarte Handwerker-Verwaltung
 
-**Projektfortschritt:**  ![Progress Bar](https://geps.dev/progress/80)  -  Status: Sprint 6 ist fast fertig
+**Projektfortschritt:**  ![Progress Bar](https://geps.dev/progress/80)  -  Status: Sprint 6 ist fast fertig   -   ***[Vollständige Dokumentation](https://github.com/caneroktay/CNR-Handwerker-Plus) -->***
 
 ![](./images/handwerkerpro.jpg)
 
