@@ -75,13 +75,22 @@ return [
 
     // Mail-Konfiguration — aus .env geladen
     'mail' => [
-        'smtp_host'   => $_ENV['MAIL_SMTP_HOST']   ?? '',
-        'smtp_port'   => $_ENV['MAIL_SMTP_PORT']   ?? '',
+        'smtp_host'   => $_ENV['MAIL_SMTP_HOST']   ?? 'smtp.mailtrap.io',
+        'smtp_port'   => $_ENV['MAIL_SMTP_PORT']   ?? '587',
         'smtp_user'   => $_ENV['MAIL_SMTP_USER']   ?? '',
         'smtp_pass'   => $_ENV['MAIL_SMTP_PASS']   ?? '',
-        'smtp_secure' => $_ENV['MAIL_SMTP_SECURE'] ?? '',  // tls oder ssl
-        'from_email'  => $_ENV['MAIL_FROM_EMAIL']  ?? '',
-        'from_name'   => $_ENV['MAIL_FROM_NAME']   ?? '',
-        'debug'       => ($_ENV['MAIL_DEBUG']      ?? '') === 'true',
+        'smtp_secure' => $_ENV['MAIL_SMTP_SECURE'] ?? 'tls',
+        'from_email'  => $_ENV['MAIL_FROM_EMAIL']  ?? 'noreply@klausmeier-gmbh.de',
+        'from_name'   => $_ENV['MAIL_FROM_NAME']   ?? 'Klaus Meier GmbH',
+        'debug'       => ($_ENV['MAIL_DEBUG']      ?? 'false') === 'true',
+
+        // SSL-Zertifikatsprüfung:
+        //   Produktion (APP_ENV=production): IMMER true — echte Zertifikate werden geprüft.
+        //   Entwicklung (APP_ENV=development): Kann per MAIL_SSL_VERIFY=false deaktiviert
+        //   werden, z.B. für Mailtrap oder lokale SMTP-Server ohne gültiges Zertifikat.
+        //   WICHTIG: Niemals MAIL_SSL_VERIFY=false in Produktion setzen!
+        'ssl_verify'  => ($_ENV['APP_ENV'] ?? 'development') === 'production'
+                         ? true  // In Produktion immer erzwingen, .env-Wert wird ignoriert
+                         : ($_ENV['MAIL_SSL_VERIFY'] ?? 'true') === 'true',
     ],
 ];

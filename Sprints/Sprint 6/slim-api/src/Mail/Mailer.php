@@ -28,30 +28,36 @@ class Mailer
     {
         $mail = new PHPMailer(true); // Exceptions aktivieren
 
-     // ── SMTP-Konfiguration aus .env ──────────────────────
+        // ── SMTP-Konfiguration aus .env ──────────────────────
         $mail->isSMTP();
-        $mail->Host       = $this->config['smtp_host'];
-        $mail->SMTPAuth   = true;
-        $mail->Username   = $this->config['smtp_user'];
-        $mail->Password   = $this->config['smtp_pass'];
-        $mail->SMTPSecure = $this->config['smtp_secure'] === 'ssl'
-                            ? PHPMailer::ENCRYPTION_SMTPS
-                            : PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = (int) $this->config['smtp_port'];
-        $mail->CharSet    = 'UTF-8';
-        $mail->Encoding   = 'base64';
-
-        // ── Für LOCAL  ────────────────
-        $mail->SMTPOptions = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                'allow_self_signed' => true
-            )
-        );
+        $mail->Host        = $this->config['smtp_host'];
+        $mail->SMTPAuth    = true;
+        $mail->Username    = $this->config['smtp_user'];
+        $mail->Password    = $this->config['smtp_pass'];
+        $mail->SMTPSecure  = $this->config['smtp_secure'] === 'ssl'
+                             ? PHPMailer::ENCRYPTION_SMTPS
+                             : PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port        = (int) $this->config['smtp_port'];
+        $mail->CharSet     = 'UTF-8';
+        $mail->Encoding    = 'base64';
 
         // Debug-Modus nur in Entwicklung
         $mail->SMTPDebug   = $this->config['debug'] ? SMTP::DEBUG_SERVER : SMTP::DEBUG_OFF;
+
+        // SSL-Zertifikatsprüfung
+        // ssl_verify=true  → Produktion: Zertifikat wird geprüft (sicher)
+        // ssl_verify=false → Nur Entwicklung erlaubt (z.B. Mailtrap, selbstsignierte Zerts.)
+        // In settings.php wird ssl_verify=true in Produktion IMMER erzwungen,
+        // unabhängig vom .env-Wert — diese Prüfung hier ist eine zusätzliche Absicherung.
+        if (!($this->config['ssl_verify'] ?? true)) {
+            $mail->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer'       => false,
+                    'verify_peer_name'  => false,
+                    'allow_self_signed' => true,
+                ],
+            ];
+        }
 
         // Absender
         $mail->setFrom(
