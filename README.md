@@ -2,7 +2,7 @@
 
 ## Die smarte Handwerker-Verwaltung
 
-**Projektfortschritt:**  ![Progress Bar](https://geps.dev/progress/80)  -  Status: Sprint 6 ist fertig   -   ***[Vollständige Dokumentation](https://caneroktay.com/CNR-Handwerker-Plus) -->***
+**Projektfortschritt:**  ![Progress Bar](https://geps.dev/progress/80) -  Das Backend ist vollständig fertiggestellt.   -   ***[Vollständige Dokumentation](https://caneroktay.com/CNR-Handwerker-Plus) -->***
 
 ![](./images/handwerkerpro.jpg)
 
